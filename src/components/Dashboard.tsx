@@ -32,10 +32,10 @@ export const Dashboard: React.FC = () => {
     activeOutlet,
   } = useDashboard();
 
-  // Compute KPI metrics dynamically
-  const todaySalesAmount = dailySales[dailySales.length - 1]?.sales || 18540;
+  // Compute KPI metrics dynamically from real data (no fake fallbacks)
+  const todaySalesAmount = dailySales[dailySales.length - 1]?.sales || 0;
   const todayAppointmentsCount = appointments.length;
-  const walkInsCount = 7;
+  const walkInsCount = 0;
   const completedCount = appointments.filter((a) => a.status === 'Completed').length;
   const pendingCount = appointments.filter((a) => a.status === 'Booked' || a.status === 'Checked In').length;
   const lowStockCount = inventory.filter((i) => i.status !== 'Optimal').length;
@@ -45,54 +45,54 @@ export const Dashboard: React.FC = () => {
       id: 'kpi-1',
       title: "Today's Sales",
       value: formatCurrency(todaySalesAmount),
-      comparison: '+12%',
+      comparison: '',
       isPositive: true,
-      description: 'vs. ₹16,500 yesterday',
+      description: '',
       type: 'sales',
     },
     {
       id: 'kpi-2',
       title: "Today's Appointments",
       value: todayAppointmentsCount,
-      comparison: '+4 slots',
+      comparison: '',
       isPositive: true,
-      description: '20 booked in advance',
+      description: '',
       type: 'appointments',
     },
     {
       id: 'kpi-3',
       title: 'Walk-ins',
       value: walkInsCount,
-      comparison: '+2 walk-ins',
+      comparison: '',
       isPositive: true,
-      description: '27% of total visits',
+      description: '',
       type: 'walkins',
     },
     {
       id: 'kpi-4',
       title: 'Completed Services',
       value: completedCount,
-      comparison: '73% done',
+      comparison: '',
       isPositive: true,
-      description: 'Avg time: 42 mins',
+      description: '',
       type: 'completed',
     },
     {
       id: 'kpi-5',
       title: 'Pending Appointments',
       value: pendingCount,
-      comparison: 'Needs action',
+      comparison: '',
       isPositive: false,
-      description: '3 checked in salon',
+      description: '',
       type: 'pending',
     },
     {
       id: 'kpi-6',
       title: 'Low Stock Items',
       value: lowStockCount,
-      comparison: '2 Critical',
+      comparison: '',
       isPositive: false,
-      description: 'Needs vendor restock',
+      description: '',
       type: 'stock',
     },
   ];
