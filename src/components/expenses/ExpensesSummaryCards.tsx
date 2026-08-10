@@ -20,7 +20,7 @@ export const ExpensesSummaryCards: React.FC = () => {
   expenses.forEach((e) => {
     categoryTotals[e.category] = (categoryTotals[e.category] || 0) + e.amount;
   });
-  let topCategory = 'Utilities & Rent';
+  let topCategory = '—';
   let maxCatAmount = 0;
   Object.entries(categoryTotals).forEach(([cat, amt]) => {
     if (amt > maxCatAmount) {
