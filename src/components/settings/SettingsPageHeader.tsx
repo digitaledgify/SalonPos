@@ -24,7 +24,7 @@ export const SettingsPageHeader: React.FC = () => {
             sx={{
               fontWeight: 800,
               color: '#2D1F24',
-              fontFamily: '"Playfair Display", serif',
+              fontFamily: '"Inter", sans-serif',
               fontSize: { xs: '1.5rem', sm: '1.85rem' },
             }}
           >
@@ -85,6 +85,7 @@ export const SettingsPageHeader: React.FC = () => {
           <Tab label="Business Hours & Slots" />
           <Tab label="Billing, GST & POS" />
           <Tab label="Notifications & SMS" />
+          <Tab label="Staff Access" />
           <Tab label="Backup & Data Management" />
         </Tabs>
       </Box>

@@ -7,6 +7,7 @@ import { BusinessHoursTab } from './BusinessHoursTab';
 import { BillingTaxTab } from './BillingTaxTab';
 import { NotificationsTab } from './NotificationsTab';
 import { BackupResetTab } from './BackupResetTab';
+import { StaffAccessTab } from './StaffAccessTab';
 
 const SettingsContent: React.FC = () => {
   const { activeTab } = useSettings();
@@ -19,7 +20,8 @@ const SettingsContent: React.FC = () => {
       {activeTab === 1 && <BusinessHoursTab />}
       {activeTab === 2 && <BillingTaxTab />}
       {activeTab === 3 && <NotificationsTab />}
-      {activeTab === 4 && <BackupResetTab />}
+      {activeTab === 4 && <StaffAccessTab />}
+      {activeTab === 5 && <BackupResetTab />}
     </Box>
   );
 };
