@@ -266,7 +266,7 @@ export const CustomerForm: React.FC = () => {
               <PersonAddIcon />
             </Box>
             <Box>
-              <Typography variant="h6" sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Playfair Display", serif' }}>
+              <Typography variant="h6" sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Inter", sans-serif' }}>
                 {customerToEdit ? `Edit Profile — ${customerToEdit.fullName}` : 'New Customer Registration'}
               </Typography>
               <Typography variant="caption" sx={{ color: '#6E5C63' }}>

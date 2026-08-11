@@ -62,7 +62,7 @@ export const Analytics: React.FC<Props> = ({ customer }) => {
     <Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2.5 }}>
         <BarChartIcon sx={{ color: '#6A3F4D' }} />
-        <Typography variant="h6" sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Playfair Display", serif' }}>
+        <Typography variant="h6" sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Inter", sans-serif' }}>
           {customer ? `${customer.firstName}'s Activity Analytics` : 'Customer Base Insights & Analytics'}
         </Typography>
       </Box>

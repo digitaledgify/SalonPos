@@ -86,7 +86,7 @@ export const TopSummaryCards: React.FC = () => {
             <Typography variant="caption" sx={{ color: '#6E5C63', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               {card.title}
             </Typography>
-            <Typography variant="h4" sx={{ fontWeight: 800, color: '#2D1F24', my: 0.5, fontFamily: '"Poppins", sans-serif' }}>
+            <Typography variant="h4" sx={{ fontWeight: 800, color: '#2D1F24', my: 0.5, fontFamily: '"Inter", sans-serif' }}>
               {card.count.toLocaleString()}
             </Typography>
             <Typography variant="caption" sx={{ color: card.accentColor, fontWeight: 600 }}>

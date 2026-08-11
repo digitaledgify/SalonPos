@@ -64,7 +64,7 @@ export const PhotoGallery: React.FC<Props> = ({ customerId, photos }) => {
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <CollectionsIcon sx={{ color: '#6A3F4D' }} />
-          <Typography variant="h6" sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Playfair Display", serif' }}>
+          <Typography variant="h6" sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Inter", sans-serif' }}>
             Before & After Photo Gallery ({photos.length})
           </Typography>
         </Box>

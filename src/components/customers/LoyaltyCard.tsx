@@ -74,7 +74,7 @@ export const LoyaltyCard: React.FC<Props> = ({ customer }) => {
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <LoyaltyIcon sx={{ color: '#EBD9DF', fontSize: 24 }} />
-          <Typography variant="h6" sx={{ fontWeight: 800, fontFamily: '"Playfair Display", serif', color: '#EBD9DF' }}>
+          <Typography variant="h6" sx={{ fontWeight: 800, fontFamily: '"Inter", sans-serif', color: '#EBD9DF' }}>
             Loyalty Rewards Program
           </Typography>
         </Box>
@@ -100,7 +100,7 @@ export const LoyaltyCard: React.FC<Props> = ({ customer }) => {
           <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 600 }}>
             Available Points
           </Typography>
-          <Typography variant="h4" sx={{ fontWeight: 800, color: '#EBD9DF', fontFamily: '"Poppins", sans-serif' }}>
+          <Typography variant="h4" sx={{ fontWeight: 800, color: '#EBD9DF', fontFamily: '"Inter", sans-serif' }}>
             {availablePoints}
           </Typography>
           <Typography variant="caption" sx={{ color: '#EBD9DF', fontSize: '0.7rem' }}>
