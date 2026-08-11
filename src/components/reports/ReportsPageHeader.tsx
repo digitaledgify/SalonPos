@@ -27,7 +27,7 @@ export const ReportsPageHeader: React.FC = () => {
             sx={{
               fontWeight: 800,
               color: '#2D1F24',
-              fontFamily: '"Playfair Display", serif',
+              fontFamily: '"Inter", sans-serif',
               fontSize: { xs: '1.5rem', sm: '1.85rem' },
             }}
           >
