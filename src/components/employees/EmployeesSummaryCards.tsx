@@ -103,7 +103,7 @@ export const EmployeesSummaryCards: React.FC = () => {
                   fontWeight: 800,
                   color: '#2D1F24',
                   fontSize: '1.5rem',
-                  fontFamily: '"Poppins", sans-serif',
+                  fontFamily: '"Inter", sans-serif',
                   mb: 0.5,
                 }}
               >
