@@ -1,6 +1,7 @@
 import React from 'react';
-import { Box, ThemeProvider, CssBaseline, Snackbar, Alert } from '@mui/material';
+import { Box, ThemeProvider, CssBaseline, Snackbar, Alert, CircularProgress } from '@mui/material';
 import { salonTheme } from './theme/salonTheme';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { DashboardProvider, useDashboard } from './context/DashboardContext';
 import { Sidebar } from './components/Sidebar';
 import { Topbar } from './components/Topbar';
@@ -14,7 +15,7 @@ import { EmployeesModule } from './components/employees/EmployeesModule';
 import { ExpensesModule } from './components/expenses/ExpensesModule';
 import { ReportsModule } from './components/reports/ReportsModule';
 import { SettingsModule } from './components/settings/SettingsModule';
-import { LoginModal } from './components/auth/LoginModal';
+import { AuthScreen } from './components/auth/AuthScreen';
 
 function MainAppContent() {
   const { activeNavItem, toastMessage, hideToast } = useDashboard();
@@ -72,17 +73,8 @@ function MainAppContent() {
 }
 
 function AppShell() {
-  const { isAuthenticated, isLoginModalOpen, setIsLoginModalOpen } = useDashboard();
-
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#F8F4EE' }}>
-      {/* Role-based Staff Login Modal */}
-      <LoginModal
-        open={!isAuthenticated || isLoginModalOpen}
-        onClose={() => setIsLoginModalOpen(false)}
-        canDismiss={isAuthenticated}
-      />
-
       {/* Left Navigation Sidebar */}
       <Sidebar />
 
@@ -98,13 +90,35 @@ function AppShell() {
   );
 }
 
+function AuthGate() {
+  const { session, profile, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <CircularProgress sx={{ color: '#6A3F4D' }} />
+      </Box>
+    );
+  }
+
+  if (!session || !profile) {
+    return <AuthScreen />;
+  }
+
+  return (
+    <DashboardProvider>
+      <AppShell />
+    </DashboardProvider>
+  );
+}
+
 export default function App() {
   return (
     <ThemeProvider theme={salonTheme}>
       <CssBaseline />
-      <DashboardProvider>
-        <AppShell />
-      </DashboardProvider>
+      <AuthProvider>
+        <AuthGate />
+      </AuthProvider>
     </ThemeProvider>
   );
 }
