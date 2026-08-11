@@ -209,7 +209,7 @@ export const ServiceFormModal: React.FC = () => {
               <ContentCutIcon sx={{ fontSize: 22 }} />
             </Box>
             <Box>
-              <Typography variant="h6" sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Playfair Display", serif' }}>
+              <Typography variant="h6" sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Inter", sans-serif' }}>
                 {serviceToEdit ? 'Edit Service Specification' : 'Add New Salon Service'}
               </Typography>
               <Typography variant="caption" sx={{ color: '#6E5C63' }}>

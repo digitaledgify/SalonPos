@@ -102,7 +102,7 @@ export const QuickServiceBookingModal: React.FC = () => {
               <CalendarMonthIcon />
             </Box>
             <Box>
-              <Typography variant="h6" sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Playfair Display", serif' }}>
+              <Typography variant="h6" sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Inter", sans-serif' }}>
                 Quick Book Appointment
               </Typography>
               <Typography variant="caption" sx={{ color: '#6E5C63' }}>
