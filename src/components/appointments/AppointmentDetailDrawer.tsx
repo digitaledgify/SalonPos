@@ -91,7 +91,7 @@ export const AppointmentDetailDrawer: React.FC<Props> = ({ appointment, onClose 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
           <CalendarTodayIcon />
           <Box>
-            <Typography variant="h6" sx={{ fontWeight: 800, fontFamily: '"Playfair Display", serif', fontSize: '1.15rem' }}>
+            <Typography variant="h6" sx={{ fontWeight: 800, fontFamily: '"Inter", sans-serif', fontSize: '1.15rem' }}>
               Appointment Details
             </Typography>
             <Typography variant="caption" sx={{ color: '#EBD9DF', opacity: 0.8 }}>
