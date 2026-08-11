@@ -97,14 +97,14 @@ export const KPICard: React.FC<KPICardProps> = ({
           </Box>
         </Box>
 
-        <Typography variant="caption" sx={{ fontFamily: '"Lato", "Inter", sans-serif', color: '#6E5C63', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+        <Typography variant="caption" sx={{ fontFamily: '"Inter", sans-serif', color: '#6E5C63', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
           {title}
         </Typography>
 
         <Typography
           variant="h4"
           sx={{
-            fontFamily: '"Poppins", sans-serif',
+            fontFamily: '"Inter", sans-serif',
             fontWeight: 700,
             color: '#2D1F24',
             my: 0.5,
@@ -114,7 +114,7 @@ export const KPICard: React.FC<KPICardProps> = ({
           {value}
         </Typography>
 
-        <Typography variant="caption" sx={{ fontFamily: '"Lato", "Inter", sans-serif', color: '#9E8D93', fontSize: '0.78rem', display: 'block', fontWeight: 500 }}>
+        <Typography variant="caption" sx={{ fontFamily: '"Inter", sans-serif', color: '#9E8D93', fontSize: '0.78rem', display: 'block', fontWeight: 500 }}>
           {description}
         </Typography>
       </CardContent>

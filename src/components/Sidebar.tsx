@@ -124,7 +124,7 @@ export const Sidebar: React.FC = () => {
                 fontWeight: 800,
                 fontSize: '1.25rem',
                 color: '#2D1F24',
-                fontFamily: '"Poppins", sans-serif',
+                fontFamily: '"Inter", sans-serif',
                 letterSpacing: '-0.02em',
                 lineHeight: 1.1,
               }}
@@ -134,7 +134,7 @@ export const Sidebar: React.FC = () => {
             <Typography
               variant="caption"
               sx={{
-                fontFamily: '"Montserrat", sans-serif',
+                fontFamily: '"Inter", sans-serif',
                 fontSize: '0.62rem',
                 fontWeight: 700,
                 letterSpacing: '0.14em',
@@ -264,7 +264,7 @@ export const Sidebar: React.FC = () => {
                     slotProps={{
                       primary: {
                         sx: {
-                          fontFamily: '"Lato", "Inter", sans-serif',
+                          fontFamily: '"Inter", sans-serif',
                           fontSize: '0.9rem',
                           fontWeight: isSelected ? 600 : 500,
                           color: '#6A3F4D',
@@ -306,7 +306,7 @@ export const Sidebar: React.FC = () => {
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <SupervisorAccountIcon sx={{ fontSize: 18, color: '#6A3F4D' }} />
-              <Typography variant="caption" sx={{ fontFamily: '"Lato", "Inter", sans-serif', fontWeight: 700, color: '#6A3F4D', opacity: 0.8, textTransform: 'uppercase' }}>
+              <Typography variant="caption" sx={{ fontFamily: '"Inter", sans-serif', fontWeight: 700, color: '#6A3F4D', opacity: 0.8, textTransform: 'uppercase' }}>
                 Active Role
               </Typography>
             </Box>
@@ -321,7 +321,7 @@ export const Sidebar: React.FC = () => {
               sx={{
                 borderRadius: '8px',
                 fontSize: '0.85rem',
-                fontFamily: '"Lato", "Inter", sans-serif',
+                fontFamily: '"Inter", sans-serif',
                 fontWeight: 600,
                 color: '#6A3F4D',
                 bgcolor: '#F8F4EE',
@@ -333,19 +333,16 @@ export const Sidebar: React.FC = () => {
               <MenuItem value="Admin">
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <Chip label="Admin" size="small" color="primary" sx={{ height: 18, fontSize: '0.65rem' }} />
-                  Full Control
                 </Box>
               </MenuItem>
               <MenuItem value="Reception">
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <Chip label="Reception" size="small" color="secondary" sx={{ height: 18, fontSize: '0.65rem' }} />
-                  Front Desk POS
                 </Box>
               </MenuItem>
               <MenuItem value="Stylist">
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <Chip label="Stylist" size="small" sx={{ height: 18, fontSize: '0.65rem', bgcolor: '#EBD9DF', color: '#6A3F4D' }} />
-                  My Schedule
                 </Box>
               </MenuItem>
             </Select>

@@ -123,7 +123,7 @@ export const Topbar: React.FC = () => {
             <Typography
               variant="body2"
               sx={{
-                fontFamily: '"Lato", "Inter", sans-serif',
+                fontFamily: '"Inter", sans-serif',
                 fontWeight: 400,
                 color: '#6A3F4D',
                 fontSize: { xs: '0.8rem', md: '0.9rem' },
@@ -160,7 +160,7 @@ export const Topbar: React.FC = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             sx={{
-              fontFamily: '"Lato", "Inter", sans-serif',
+              fontFamily: '"Inter", sans-serif',
               fontSize: '0.88rem',
               width: '100%',
               color: '#2D1F24',
@@ -201,7 +201,7 @@ export const Topbar: React.FC = () => {
               color: '#2D1F24',
               border: '1px solid #E8DFD5',
               fontWeight: 700,
-              fontFamily: '"Lato", "Inter", sans-serif',
+              fontFamily: '"Inter", sans-serif',
               fontSize: '0.75rem',
             }}
           />
@@ -216,7 +216,7 @@ export const Topbar: React.FC = () => {
               bgcolor: '#EBD9DF',
               color: '#6A3F4D',
               fontWeight: 700,
-              fontFamily: '"Lato", "Inter", sans-serif',
+              fontFamily: '"Inter", sans-serif',
               fontSize: '0.75rem',
               cursor: 'pointer',
               '&:hover': { bgcolor: '#D9C5CB' },
@@ -252,7 +252,7 @@ export const Topbar: React.FC = () => {
               <Typography
                 variant="body2"
                 sx={{
-                  fontFamily: '"Lato", "Inter", sans-serif',
+                  fontFamily: '"Inter", sans-serif',
                   fontWeight: 700,
                   lineHeight: 1.1,
                   color: '#2D1F24',
@@ -263,7 +263,7 @@ export const Topbar: React.FC = () => {
               <Typography
                 variant="caption"
                 sx={{
-                  fontFamily: '"Lato", "Inter", sans-serif',
+                  fontFamily: '"Inter", sans-serif',
                   color: '#6E5C63',
                   fontSize: '0.72rem',
                 }}
