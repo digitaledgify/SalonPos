@@ -112,7 +112,7 @@ export const AddEditExpenseModal: React.FC = () => {
       }}
     >
       <form onSubmit={handleSubmit}>
-        <DialogTitle sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Playfair Display", serif' }}>
+        <DialogTitle sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Inter", sans-serif' }}>
           {isEdit ? 'Edit Operational Expense Record' : 'Log New Salon Expense'}
         </DialogTitle>
 

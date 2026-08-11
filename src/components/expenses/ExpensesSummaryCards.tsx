@@ -20,7 +20,7 @@ export const ExpensesSummaryCards: React.FC = () => {
   expenses.forEach((e) => {
     categoryTotals[e.category] = (categoryTotals[e.category] || 0) + e.amount;
   });
-  let topCategory = 'Utilities & Rent';
+  let topCategory = '—';
   let maxCatAmount = 0;
   Object.entries(categoryTotals).forEach(([cat, amt]) => {
     if (amt > maxCatAmount) {
@@ -53,7 +53,7 @@ export const ExpensesSummaryCards: React.FC = () => {
               <AccountBalanceWalletIcon sx={{ fontSize: 20 }} />
             </Box>
           </Box>
-          <Typography variant="h4" sx={{ fontWeight: 800, color: '#2D1F24', fontSize: '1.75rem', fontFamily: '"Poppins", sans-serif' }}>
+          <Typography variant="h4" sx={{ fontWeight: 800, color: '#2D1F24', fontSize: '1.75rem', fontFamily: '"Inter", sans-serif' }}>
             ₹{totalMonthlyExpenses.toLocaleString('en-IN')}
           </Typography>
           <Typography variant="caption" sx={{ color: '#6E5C63', mt: 0.5, display: 'block' }}>
@@ -85,7 +85,7 @@ export const ExpensesSummaryCards: React.FC = () => {
               <PendingActionsIcon sx={{ fontSize: 20 }} />
             </Box>
           </Box>
-          <Typography variant="h4" sx={{ fontWeight: 800, color: pendingCount > 0 ? '#B78103' : '#2D1F24', fontSize: '1.75rem', fontFamily: '"Poppins", sans-serif' }}>
+          <Typography variant="h4" sx={{ fontWeight: 800, color: pendingCount > 0 ? '#B78103' : '#2D1F24', fontSize: '1.75rem', fontFamily: '"Inter", sans-serif' }}>
             ₹{pendingAmount.toLocaleString('en-IN')}
           </Typography>
           <Typography variant="caption" sx={{ color: pendingCount > 0 ? '#8D6100' : '#6E5C63', mt: 0.5, display: 'block' }}>
@@ -117,7 +117,7 @@ export const ExpensesSummaryCards: React.FC = () => {
           <Typography variant="h6" sx={{ fontWeight: 800, color: '#2D1F24', fontSize: '1.15rem' }}>
             {topCategory}
           </Typography>
-          <Typography variant="caption" sx={{ color: '#2E7D32', fontWeight: 700, mt: 0.5, display: 'block', fontFamily: '"Poppins", sans-serif' }}>
+          <Typography variant="caption" sx={{ color: '#2E7D32', fontWeight: 700, mt: 0.5, display: 'block', fontFamily: '"Inter", sans-serif' }}>
             ₹{maxCatAmount.toLocaleString('en-IN')} ({Math.round((maxCatAmount / (totalMonthlyExpenses || 1)) * 100)}% of total)
           </Typography>
         </Paper>
@@ -143,7 +143,7 @@ export const ExpensesSummaryCards: React.FC = () => {
               <TrendingUpIcon sx={{ fontSize: 20 }} />
             </Box>
           </Box>
-          <Typography variant="h4" sx={{ fontWeight: 800, color: '#2D1F24', fontSize: '1.75rem', fontFamily: '"Poppins", sans-serif' }}>
+          <Typography variant="h4" sx={{ fontWeight: 800, color: '#2D1F24', fontSize: '1.75rem', fontFamily: '"Inter", sans-serif' }}>
             ₹{dailyBurnAvg.toLocaleString('en-IN')}
           </Typography>
           <Typography variant="caption" sx={{ color: '#6E5C63', mt: 0.5, display: 'block' }}>
