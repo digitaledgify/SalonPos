@@ -59,7 +59,7 @@ export const AppointmentSummaryCards: React.FC = () => {
               <Typography variant="caption" sx={{ color: '#6E5C63', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                 Total Scheduled
               </Typography>
-              <Typography variant="h4" sx={{ fontWeight: 800, color: '#2D1F24', mt: 0.5, fontFamily: '"Poppins", sans-serif' }}>
+              <Typography variant="h4" sx={{ fontWeight: 800, color: '#2D1F24', mt: 0.5, fontFamily: '"Inter", sans-serif' }}>
                 {totalBooked}
               </Typography>
             </Box>
@@ -120,7 +120,7 @@ export const AppointmentSummaryCards: React.FC = () => {
               <Typography variant="caption" sx={{ color: '#6E5C63', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                 In Chair / Checked In
               </Typography>
-              <Typography variant="h4" sx={{ fontWeight: 800, color: '#0288D1', mt: 0.5, fontFamily: '"Poppins", sans-serif' }}>
+              <Typography variant="h4" sx={{ fontWeight: 800, color: '#0288D1', mt: 0.5, fontFamily: '"Inter", sans-serif' }}>
                 {checkedInCount}
               </Typography>
             </Box>
@@ -180,7 +180,7 @@ export const AppointmentSummaryCards: React.FC = () => {
               <Typography variant="caption" sx={{ color: '#6E5C63', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                 Completed Sessions
               </Typography>
-              <Typography variant="h4" sx={{ fontWeight: 800, color: '#2E7D32', mt: 0.5, fontFamily: '"Poppins", sans-serif' }}>
+              <Typography variant="h4" sx={{ fontWeight: 800, color: '#2E7D32', mt: 0.5, fontFamily: '"Inter", sans-serif' }}>
                 {completedCount}
               </Typography>
             </Box>
@@ -242,7 +242,7 @@ export const AppointmentSummaryCards: React.FC = () => {
               <Typography variant="caption" sx={{ color: '#6E5C63', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                 Chair Utilization
               </Typography>
-              <Typography variant="h4" sx={{ fontWeight: 800, color: '#2D1F24', mt: 0.5, fontFamily: '"Poppins", sans-serif' }}>
+              <Typography variant="h4" sx={{ fontWeight: 800, color: '#2D1F24', mt: 0.5, fontFamily: '"Inter", sans-serif' }}>
                 {occupancyPercentage}%
               </Typography>
             </Box>
