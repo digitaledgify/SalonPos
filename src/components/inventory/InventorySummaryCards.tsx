@@ -39,8 +39,8 @@ export const InventorySummaryCards: React.FC = () => {
               <Typography variant="caption" sx={{ color: '#6E5C63', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                 Total Catalog
               </Typography>
-              <Typography variant="h4" sx={{ fontWeight: 800, color: '#2D1F24', mt: 0.5, fontFamily: '"Poppins", sans-serif' }}>
-                {stats.totalItems} <Typography component="span" variant="body2" sx={{ color: '#6E5C63', fontWeight: 600, fontFamily: '"Poppins", sans-serif' }}>SKUs</Typography>
+              <Typography variant="h4" sx={{ fontWeight: 800, color: '#2D1F24', mt: 0.5, fontFamily: '"Inter", sans-serif' }}>
+                {stats.totalItems} <Typography component="span" variant="body2" sx={{ color: '#6E5C63', fontWeight: 600, fontFamily: '"Inter", sans-serif' }}>SKUs</Typography>
               </Typography>
             </Box>
             <Box
@@ -64,7 +64,7 @@ export const InventorySummaryCards: React.FC = () => {
             <Typography variant="caption" sx={{ color: '#6E5C63', fontWeight: 600 }}>
               Total Stock Value:
             </Typography>
-            <Typography variant="caption" sx={{ fontWeight: 800, color: '#6A3F4D', fontSize: '0.85rem', fontFamily: '"Poppins", sans-serif' }}>
+            <Typography variant="caption" sx={{ fontWeight: 800, color: '#6A3F4D', fontSize: '0.85rem', fontFamily: '"Inter", sans-serif' }}>
               ₹{stats.totalValuation.toLocaleString('en-IN')}
             </Typography>
           </Box>
@@ -95,8 +95,8 @@ export const InventorySummaryCards: React.FC = () => {
               <Typography variant="caption" sx={{ color: '#2E7D32', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                 Optimal Stock
               </Typography>
-              <Typography variant="h4" sx={{ fontWeight: 800, color: '#2E7D32', mt: 0.5, fontFamily: '"Poppins", sans-serif' }}>
-                {stats.optimalCount} <Typography component="span" variant="body2" sx={{ color: '#2E7D32', opacity: 0.8, fontWeight: 600, fontFamily: '"Poppins", sans-serif' }}>({optimalPct}%)</Typography>
+              <Typography variant="h4" sx={{ fontWeight: 800, color: '#2E7D32', mt: 0.5, fontFamily: '"Inter", sans-serif' }}>
+                {stats.optimalCount} <Typography component="span" variant="body2" sx={{ color: '#2E7D32', opacity: 0.8, fontWeight: 600, fontFamily: '"Inter", sans-serif' }}>({optimalPct}%)</Typography>
               </Typography>
             </Box>
             <Box
@@ -155,8 +155,8 @@ export const InventorySummaryCards: React.FC = () => {
               <Typography variant="caption" sx={{ color: '#ED6C02', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                 Low Stock Warnings
               </Typography>
-              <Typography variant="h4" sx={{ fontWeight: 800, color: '#ED6C02', mt: 0.5, fontFamily: '"Poppins", sans-serif' }}>
-                {stats.lowCount} <Typography component="span" variant="body2" sx={{ color: '#ED6C02', opacity: 0.8, fontWeight: 600, fontFamily: '"Poppins", sans-serif' }}>({lowPct}%)</Typography>
+              <Typography variant="h4" sx={{ fontWeight: 800, color: '#ED6C02', mt: 0.5, fontFamily: '"Inter", sans-serif' }}>
+                {stats.lowCount} <Typography component="span" variant="body2" sx={{ color: '#ED6C02', opacity: 0.8, fontWeight: 600, fontFamily: '"Inter", sans-serif' }}>({lowPct}%)</Typography>
               </Typography>
             </Box>
             <Box
@@ -215,8 +215,8 @@ export const InventorySummaryCards: React.FC = () => {
               <Typography variant="caption" sx={{ color: '#D32F2F', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                 Critical Reorder Alerts
               </Typography>
-              <Typography variant="h4" sx={{ fontWeight: 800, color: '#D32F2F', mt: 0.5, fontFamily: '"Poppins", sans-serif' }}>
-                {stats.criticalCount} <Typography component="span" variant="body2" sx={{ color: '#D32F2F', opacity: 0.8, fontWeight: 600, fontFamily: '"Poppins", sans-serif' }}>({criticalPct}%)</Typography>
+              <Typography variant="h4" sx={{ fontWeight: 800, color: '#D32F2F', mt: 0.5, fontFamily: '"Inter", sans-serif' }}>
+                {stats.criticalCount} <Typography component="span" variant="body2" sx={{ color: '#D32F2F', opacity: 0.8, fontWeight: 600, fontFamily: '"Inter", sans-serif' }}>({criticalPct}%)</Typography>
               </Typography>
             </Box>
             <Box

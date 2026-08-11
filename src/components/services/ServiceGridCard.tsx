@@ -221,7 +221,7 @@ export const ServiceGridCard: React.FC<Props> = ({ service }) => {
               fontWeight: 800,
               color: '#2D1F24',
               fontSize: '1.05rem',
-              fontFamily: '"Playfair Display", serif',
+              fontFamily: '"Inter", sans-serif',
               lineHeight: 1.3,
               mb: 0.8,
             }}
@@ -279,7 +279,7 @@ export const ServiceGridCard: React.FC<Props> = ({ service }) => {
               <Typography variant="caption" sx={{ color: '#6E5C63', display: 'block', fontSize: '0.7rem' }}>
                 Standard Price
               </Typography>
-              <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#2D1F24', fontSize: '1.1rem', fontFamily: '"Poppins", sans-serif' }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#2D1F24', fontSize: '1.1rem', fontFamily: '"Inter", sans-serif' }}>
                 ₹{service.basePrice.toLocaleString('en-IN')}
               </Typography>
             </Box>
@@ -295,10 +295,10 @@ export const ServiceGridCard: React.FC<Props> = ({ service }) => {
                   fontSize: '0.68rem',
                   height: 18,
                   mb: 0.3,
-                  fontFamily: '"Poppins", sans-serif',
+                  fontFamily: '"Inter", sans-serif',
                 }}
               />
-              <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#2E7D32', fontSize: '1rem', fontFamily: '"Poppins", sans-serif' }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#2E7D32', fontSize: '1rem', fontFamily: '"Inter", sans-serif' }}>
                 ₹{memberPrice.toLocaleString('en-IN')}
               </Typography>
             </Box>

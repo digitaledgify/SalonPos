@@ -81,7 +81,7 @@ export const AssignShiftModal: React.FC = () => {
         },
       }}
     >
-      <DialogTitle sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Playfair Display", serif' }}>
+      <DialogTitle sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Inter", sans-serif' }}>
         Assign Weekly Shift Roster
       </DialogTitle>
 

@@ -25,7 +25,7 @@ export const BirthdayWidget: React.FC = () => {
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <CakeIcon sx={{ color: '#D81B60', fontSize: 24 }} />
-          <Typography variant="h6" sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Playfair Display", serif' }}>
+          <Typography variant="h6" sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Inter", sans-serif' }}>
             Upcoming Birthdays
           </Typography>
         </Box>

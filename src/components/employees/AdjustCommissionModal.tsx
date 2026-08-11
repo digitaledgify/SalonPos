@@ -54,7 +54,7 @@ export const AdjustCommissionModal: React.FC = () => {
         },
       }}
     >
-      <DialogTitle sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Playfair Display", serif' }}>
+      <DialogTitle sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Inter", sans-serif' }}>
         Adjust Commission Rate
       </DialogTitle>
 

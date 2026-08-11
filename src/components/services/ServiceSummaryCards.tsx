@@ -114,7 +114,7 @@ export const ServiceSummaryCards: React.FC = () => {
                 sx={{
                   fontWeight: 800,
                   color: '#2D1F24',
-                  fontFamily: '"Poppins", sans-serif',
+                  fontFamily: '"Inter", sans-serif',
                   fontSize: { xs: '1.15rem', lg: '1.25rem' },
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',

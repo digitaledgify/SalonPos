@@ -92,7 +92,7 @@ export const EmployeeDetailDrawer: React.FC = () => {
             sx={{ width: 72, height: 72, border: '3px solid #EBD9DF', boxShadow: '0 4px 12px rgba(0,0,0,0.15)' }}
           />
           <Box>
-            <Typography variant="h5" sx={{ fontWeight: 800, color: '#F8F4EE', fontFamily: '"Playfair Display", serif' }}>
+            <Typography variant="h5" sx={{ fontWeight: 800, color: '#F8F4EE', fontFamily: '"Inter", sans-serif' }}>
               {selectedEmployee.name}
             </Typography>
             <Typography variant="body2" sx={{ color: '#EBD9DF', fontWeight: 600 }}>

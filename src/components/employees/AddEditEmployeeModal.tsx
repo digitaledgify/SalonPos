@@ -146,7 +146,7 @@ export const AddEditEmployeeModal: React.FC = () => {
       }}
     >
       <form onSubmit={handleSubmit}>
-        <DialogTitle sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Playfair Display", serif' }}>
+        <DialogTitle sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Inter", sans-serif' }}>
           {isEdit ? 'Edit Staff Member Details' : 'Add New Staff Member'}
         </DialogTitle>
 

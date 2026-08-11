@@ -35,7 +35,7 @@ export const EmployeesPageHeader: React.FC = () => {
               fontWeight: 800,
               fontSize: { xs: '1.5rem', sm: '1.85rem' },
               color: '#2D1F24',
-              fontFamily: '"Playfair Display", serif, "Plus Jakarta Sans"',
+              fontFamily: '"Inter", sans-serif',
               letterSpacing: '-0.01em',
             }}
           >

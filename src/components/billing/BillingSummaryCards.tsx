@@ -75,7 +75,7 @@ export const BillingSummaryCards: React.FC = () => {
               <Typography variant="caption" sx={{ color: '#6E5C63', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                 Total Revenue
               </Typography>
-              <Typography variant="h4" sx={{ fontWeight: 800, color: '#2D1F24', mt: 0.5, fontFamily: '"Poppins", sans-serif' }}>
+              <Typography variant="h4" sx={{ fontWeight: 800, color: '#2D1F24', mt: 0.5, fontFamily: '"Inter", sans-serif' }}>
                 ₹{totalPaidRevenue.toLocaleString()}
               </Typography>
             </Box>
@@ -135,7 +135,7 @@ export const BillingSummaryCards: React.FC = () => {
               <Typography variant="caption" sx={{ color: '#6E5C63', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                 18% GST Collected
               </Typography>
-              <Typography variant="h4" sx={{ fontWeight: 800, color: '#0288D1', mt: 0.5, fontFamily: '"Poppins", sans-serif' }}>
+              <Typography variant="h4" sx={{ fontWeight: 800, color: '#0288D1', mt: 0.5, fontFamily: '"Inter", sans-serif' }}>
                 ₹{totalGstCollected.toLocaleString()}
               </Typography>
             </Box>
@@ -194,7 +194,7 @@ export const BillingSummaryCards: React.FC = () => {
               <Typography variant="caption" sx={{ color: '#6E5C63', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                 Average Ticket Size
               </Typography>
-              <Typography variant="h4" sx={{ fontWeight: 800, color: '#2E7D32', mt: 0.5, fontFamily: '"Poppins", sans-serif' }}>
+              <Typography variant="h4" sx={{ fontWeight: 800, color: '#2E7D32', mt: 0.5, fontFamily: '"Inter", sans-serif' }}>
                 ₹{avgTicket.toLocaleString()}
               </Typography>
             </Box>
@@ -253,7 +253,7 @@ export const BillingSummaryCards: React.FC = () => {
               <Typography variant="caption" sx={{ color: '#6E5C63', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                 Digital UPI Share
               </Typography>
-              <Typography variant="h4" sx={{ fontWeight: 800, color: '#2D1F24', mt: 0.5, fontFamily: '"Poppins", sans-serif' }}>
+              <Typography variant="h4" sx={{ fontWeight: 800, color: '#2D1F24', mt: 0.5, fontFamily: '"Inter", sans-serif' }}>
                 {upiPercent}%
               </Typography>
             </Box>

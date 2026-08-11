@@ -49,7 +49,7 @@ export const ServicePageHeader: React.FC = () => {
               sx={{
                 fontWeight: 800,
                 color: '#2D1F24',
-                fontFamily: '"Playfair Display", serif',
+                fontFamily: '"Inter", sans-serif',
                 letterSpacing: '-0.01em',
               }}
             >

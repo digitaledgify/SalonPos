@@ -28,7 +28,7 @@ export const ReportsSummaryCards: React.FC = () => {
               <TrendingUpIcon sx={{ fontSize: 20 }} />
             </Box>
           </Box>
-          <Typography variant="h4" sx={{ fontWeight: 800, color: '#2D1F24', fontSize: '1.75rem', fontFamily: '"Poppins", sans-serif' }}>
+          <Typography variant="h4" sx={{ fontWeight: 800, color: '#2D1F24', fontSize: '1.75rem', fontFamily: '"Inter", sans-serif' }}>
             ₹{grossRevenue.toLocaleString('en-IN')}
           </Typography>
         </Paper>
@@ -45,10 +45,10 @@ export const ReportsSummaryCards: React.FC = () => {
               <AccountBalanceIcon sx={{ fontSize: 20 }} />
             </Box>
           </Box>
-          <Typography variant="h4" sx={{ fontWeight: 800, color: '#6A3F4D', fontSize: '1.75rem', fontFamily: '"Poppins", sans-serif' }}>
+          <Typography variant="h4" sx={{ fontWeight: 800, color: '#6A3F4D', fontSize: '1.75rem', fontFamily: '"Inter", sans-serif' }}>
             ₹{netProfit.toLocaleString('en-IN')}
           </Typography>
-          <Typography variant="caption" sx={{ color: '#6E5C63', mt: 0.8, display: 'block', fontWeight: 700, fontFamily: '"Poppins", sans-serif' }}>
+          <Typography variant="caption" sx={{ color: '#6E5C63', mt: 0.8, display: 'block', fontWeight: 700, fontFamily: '"Inter", sans-serif' }}>
             {profitMarginPercent}% Net Profit Margin
           </Typography>
         </Paper>
@@ -65,7 +65,7 @@ export const ReportsSummaryCards: React.FC = () => {
               <ConfirmationNumberIcon sx={{ fontSize: 20 }} />
             </Box>
           </Box>
-          <Typography variant="h4" sx={{ fontWeight: 800, color: '#2D1F24', fontSize: '1.75rem', fontFamily: '"Poppins", sans-serif' }}>
+          <Typography variant="h4" sx={{ fontWeight: 800, color: '#2D1F24', fontSize: '1.75rem', fontFamily: '"Inter", sans-serif' }}>
             ₹{avgTicketValue.toLocaleString('en-IN')}
           </Typography>
           <Typography variant="caption" sx={{ color: '#6E5C63', mt: 0.8, display: 'block' }}>
@@ -85,7 +85,7 @@ export const ReportsSummaryCards: React.FC = () => {
               <PeopleAltIcon sx={{ fontSize: 20 }} />
             </Box>
           </Box>
-          <Typography variant="h4" sx={{ fontWeight: 800, color: '#2D1F24', fontSize: '1.75rem', fontFamily: '"Poppins", sans-serif' }}>
+          <Typography variant="h4" sx={{ fontWeight: 800, color: '#2D1F24', fontSize: '1.75rem', fontFamily: '"Inter", sans-serif' }}>
             {totalClientFootfall} Visits
           </Typography>
           <Typography variant="caption" sx={{ color: '#6E5C63', mt: 0.8, display: 'block' }}>

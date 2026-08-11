@@ -39,7 +39,7 @@ export const VisitHistory: React.FC<Props> = ({ visits }) => {
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <ReceiptLongIcon sx={{ color: '#6A3F4D' }} />
-          <Typography variant="h6" sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Playfair Display", serif' }}>
+          <Typography variant="h6" sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Inter", sans-serif' }}>
             Visit & Invoice History ({visits.length})
           </Typography>
         </Box>

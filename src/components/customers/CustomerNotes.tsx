@@ -40,7 +40,7 @@ export const CustomerNotes: React.FC<Props> = ({ customerId, notes }) => {
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <NoteAltIcon sx={{ color: '#6A3F4D' }} />
-          <Typography variant="h6" sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Playfair Display", serif' }}>
+          <Typography variant="h6" sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Inter", sans-serif' }}>
             Staff Notes ({notes.length})
           </Typography>
         </Box>

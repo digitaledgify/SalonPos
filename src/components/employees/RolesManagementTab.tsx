@@ -79,7 +79,7 @@ export const RolesManagementTab: React.FC = () => {
       {/* Top Info Banner & Add Button */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, flexWrap: 'wrap', gap: 2 }}>
         <Box>
-          <Typography variant="h6" sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Playfair Display", serif' }}>
+          <Typography variant="h6" sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Inter", sans-serif' }}>
             Salon Roles & Permission Hierarchy
           </Typography>
           <Typography variant="body2" sx={{ color: '#6E5C63' }}>
@@ -216,7 +216,7 @@ export const RolesManagementTab: React.FC = () => {
           },
         }}
       >
-        <DialogTitle sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Playfair Display", serif' }}>
+        <DialogTitle sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Inter", sans-serif' }}>
           Define New Staff Role
         </DialogTitle>
         <DialogContent dividers sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 2 }}>

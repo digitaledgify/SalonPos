@@ -98,7 +98,7 @@ export const ServiceDetailModal: React.FC = () => {
               <Typography variant="caption" sx={{ fontWeight: 800, color: '#6A3F4D' }}>
                 SERVICE SPECIFICATION
               </Typography>
-              <Typography variant="h6" sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Playfair Display", serif', lineHeight: 1 }}>
+              <Typography variant="h6" sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Inter", sans-serif', lineHeight: 1 }}>
                 {selectedService.code}
               </Typography>
             </Box>
@@ -146,7 +146,7 @@ export const ServiceDetailModal: React.FC = () => {
                 )}
               </Box>
 
-              <Typography variant="h5" sx={{ fontWeight: 800, fontFamily: '"Playfair Display", serif' }}>
+              <Typography variant="h5" sx={{ fontWeight: 800, fontFamily: '"Inter", sans-serif' }}>
                 {selectedService.name}
               </Typography>
             </Box>

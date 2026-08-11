@@ -103,7 +103,7 @@ export const CustomerProfile: React.FC = () => {
             />
             <Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                <Typography variant="h5" sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Playfair Display", serif' }}>
+                <Typography variant="h5" sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Inter", sans-serif' }}>
                   {selectedCustomer.fullName}
                 </Typography>
                 <MembershipBadge tier={selectedCustomer.membership.tier} size="medium" />
@@ -248,7 +248,7 @@ export const CustomerProfile: React.FC = () => {
                   <Typography variant="caption" sx={{ color: '#EBD9DF', fontWeight: 700, textTransform: 'uppercase' }}>
                     Lifetime Financial Summary
                   </Typography>
-                  <Typography variant="h3" sx={{ fontWeight: 800, fontFamily: '"Poppins", sans-serif', my: 1, color: '#EBD9DF' }}>
+                  <Typography variant="h3" sx={{ fontWeight: 800, fontFamily: '"Inter", sans-serif', my: 1, color: '#EBD9DF' }}>
                     ₹{selectedCustomer.lifetimeSpend.toLocaleString()}
                   </Typography>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2, pt: 2, borderTop: '1px solid rgba(255,255,255,0.15)' }}>
@@ -301,7 +301,7 @@ export const CustomerProfile: React.FC = () => {
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <WorkspacePremiumIcon sx={{ color: '#6A3F4D', fontSize: 28 }} />
-                  <Typography variant="h6" sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Playfair Display", serif' }}>
+                  <Typography variant="h6" sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Inter", sans-serif' }}>
                     Membership Details — {selectedCustomer.membership.tier} Tier
                   </Typography>
                 </Box>
@@ -351,7 +351,7 @@ export const CustomerProfile: React.FC = () => {
             <Paper elevation={0} sx={{ p: 3, borderRadius: '16px', bgcolor: '#FFFFFF', border: '1px solid #E8DFD5' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2.5 }}>
                 <HealthAndSafetyIcon sx={{ color: '#D32F2F', fontSize: 26 }} />
-                <Typography variant="h6" sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Playfair Display", serif' }}>
+                <Typography variant="h6" sx={{ fontWeight: 800, color: '#2D1F24', fontFamily: '"Inter", sans-serif' }}>
                   Medical Profile & Scalp/Skin Health
                 </Typography>
               </Box>

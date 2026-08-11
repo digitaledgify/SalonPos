@@ -28,6 +28,7 @@ import {
   UserRole,
 } from '../types';
 import { DEMO_USERS } from '../constants/users';
+import { useAuth } from './AuthContext';
 
 interface DashboardContextType {
   // Multi-Tenant / Multi-Salon Outlets
@@ -105,9 +106,45 @@ interface DashboardContextType {
 const DashboardContext = createContext<DashboardContextType | undefined>(undefined);
 
 export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [outlets, setOutlets] = useState<SalonOutlet[]>(INITIAL_SALON_OUTLETS);
-  const [activeOutletId, setActiveOutletId] = useState<string>(INITIAL_SALON_OUTLETS[0].id);
+  const { profile, salon: authSalon, signOut: authSignOut } = useAuth();
+
+  // Build the outlet from the real salon record (falls back to the local
+  // placeholder only if something is still loading).
+  const derivedOutlet: SalonOutlet = authSalon
+    ? {
+        id: authSalon.id,
+        name: authSalon.name,
+        type: 'Hair & Beauty',
+        tagline: '',
+        code: authSalon.code,
+        address: authSalon.address,
+        city: authSalon.city,
+        phone: authSalon.phone,
+        email: authSalon.email,
+        gstin: '',
+        currencySymbol: authSalon.currencySymbol,
+        taxRatePercent: authSalon.taxRatePercent,
+        invoicePrefix: 'INV-',
+        logoUrl: '',
+        primaryColor: '#6A3F4D',
+        isMainBranch: true,
+        status: 'Active',
+        totalDailyRevenue: 0,
+      }
+    : INITIAL_SALON_OUTLETS[0];
+
+  const [outlets, setOutlets] = useState<SalonOutlet[]>([derivedOutlet]);
+  const [activeOutletId, setActiveOutletId] = useState<string>(derivedOutlet.id);
   const [isNewOutletModalOpen, setIsNewOutletModalOpen] = useState(false);
+
+  // Keep the outlet list in sync once the real salon loads in from Supabase
+  React.useEffect(() => {
+    if (authSalon) {
+      setOutlets([derivedOutlet]);
+      setActiveOutletId(derivedOutlet.id);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authSalon?.id]);
 
   const activeOutlet = outlets.find((o) => o.id === activeOutletId) || outlets[0];
 
@@ -131,7 +168,34 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     showToast(`Registered new Salon Tenant "${newOutlet.name}"!`);
   };
 
-  const [currentUser, setCurrentUser] = useState<UserAccount>(DEMO_USERS[0]);
+  // currentUser is now driven by the real logged-in Supabase profile.
+  // DEMO_USERS is only used as a shape/permissions fallback while the
+  // profile is still loading, and for the "quick switch role" demo helper.
+  const derivedUser: UserAccount = profile
+    ? {
+        id: profile.id,
+        name: profile.name,
+        email: profile.email,
+        role: profile.role,
+        designation: profile.designation,
+        avatarUrl: profile.avatarUrl,
+        pin: '',
+        phone: profile.phone,
+        permissions: DEMO_USERS.find((u) => u.role === profile.role)?.permissions ?? [],
+      }
+    : DEMO_USERS[0];
+
+  const [currentUser, setCurrentUser] = useState<UserAccount>(derivedUser);
+
+  // Keep currentUser in sync once the real profile loads in from Supabase
+  React.useEffect(() => {
+    if (profile) {
+      setCurrentUser(derivedUser);
+      setRoleState(profile.role);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile?.id, profile?.role]);
+
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
 
@@ -203,9 +267,8 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   };
 
   const logout = () => {
-    setIsAuthenticated(false);
-    setIsLoginModalOpen(true);
-    showToast('Signed out successfully. Session locked.');
+    authSignOut();
+    showToast('Signed out successfully.');
   };
 
   const setRole = (newRole: UserRole) => {

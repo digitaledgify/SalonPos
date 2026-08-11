@@ -118,7 +118,7 @@ export const CashDrawerModal: React.FC<Props> = ({ open, onClose }) => {
               <Typography variant="caption" sx={{ color: '#6E5C63', fontWeight: 700, textTransform: 'uppercase' }}>
                 Expected Cash in Drawer
               </Typography>
-              <Typography variant="h4" sx={{ fontWeight: 800, color: '#2D1F24', mt: 0.2, fontFamily: '"Poppins", sans-serif' }}>
+              <Typography variant="h4" sx={{ fontWeight: 800, color: '#2D1F24', mt: 0.2, fontFamily: '"Inter", sans-serif' }}>
                 ₹{expectedCashInDrawer.toLocaleString()}
               </Typography>
             </Box>

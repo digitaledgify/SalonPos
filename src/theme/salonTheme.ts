@@ -42,36 +42,36 @@ export const salonTheme = createTheme({
     },
   },
   typography: {
-    fontFamily: '"Poppins", "Inter", "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    fontFamily: '"Inter", sans-serif',
     h4: {
-      fontFamily: '"Poppins", sans-serif',
+      fontFamily: '"Inter", sans-serif',
       fontWeight: 700,
       color: '#2D1F24',
       letterSpacing: '-0.02em',
     },
     h5: {
-      fontFamily: '"Poppins", sans-serif',
+      fontFamily: '"Inter", sans-serif',
       fontWeight: 700,
       color: '#2D1F24',
       letterSpacing: '-0.01em',
     },
     h6: {
-      fontFamily: '"Poppins", sans-serif',
+      fontFamily: '"Inter", sans-serif',
       fontWeight: 600,
       color: '#2D1F24',
     },
     subtitle1: {
-      fontFamily: '"Inter", "Lato", sans-serif',
+      fontFamily: '"Inter", sans-serif',
       fontWeight: 600,
       color: '#6A3F4D',
     },
     subtitle2: {
-      fontFamily: '"Inter", "Lato", sans-serif',
+      fontFamily: '"Inter", sans-serif',
       fontWeight: 600,
       color: '#6E5C63',
     },
     button: {
-      fontFamily: '"Inter", "Lato", sans-serif',
+      fontFamily: '"Inter", sans-serif',
       textTransform: 'none',
       fontWeight: 600,
     },
