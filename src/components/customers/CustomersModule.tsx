@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Grid, Snackbar, Alert } from '@mui/material';
+import { Box, Grid, Snackbar, Alert, CircularProgress } from '@mui/material';
 import { CustomerProvider, useCustomers } from '../../context/CustomerContext';
 import { PageHeader } from './PageHeader';
 import { TopSummaryCards } from './TopSummaryCards';
@@ -13,7 +13,15 @@ import { QuickBookingModal } from './QuickBookingModal';
 import { QuickBillingModal } from './QuickBillingModal';
 
 const CustomersContent: React.FC = () => {
-  const { toast, hideCustomerToast } = useCustomers();
+  const { toast, hideCustomerToast, loadingCustomers } = useCustomers();
+
+  if (loadingCustomers) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+        <CircularProgress sx={{ color: '#6A3F4D' }} />
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ p: { xs: 2, sm: 3, md: 4 }, maxWidth: 1600, mx: 'auto' }}>

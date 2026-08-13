@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Container } from '@mui/material';
+import { Box, Container, CircularProgress } from '@mui/material';
 import { useDashboard } from '../../context/DashboardContext';
 import { AppointmentPageHeader } from './AppointmentPageHeader';
 import { AppointmentSummaryCards } from './AppointmentSummaryCards';
@@ -12,7 +12,7 @@ import { NewAppointmentModal } from '../NewAppointmentModal';
 import { Appointment } from '../../types';
 
 export const AppointmentsModule: React.FC = () => {
-  const { appointments } = useDashboard();
+  const { appointments, loadingAppointments } = useDashboard();
 
   // Local View States
   const [selectedDate, setSelectedDate] = useState('Today');
@@ -81,6 +81,14 @@ export const AppointmentsModule: React.FC = () => {
 
     return true;
   });
+
+  if (loadingAppointments) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+        <CircularProgress sx={{ color: '#6A3F4D' }} />
+      </Box>
+    );
+  }
 
   return (
     <Container maxWidth="xl" sx={{ py: 3, px: { xs: 2, sm: 3 } }}>
