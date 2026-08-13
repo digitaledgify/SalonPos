@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Box } from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
 import { useDashboard } from '../../context/DashboardContext';
 import { BillingPageHeader } from './BillingPageHeader';
 import { BillingSummaryCards } from './BillingSummaryCards';
@@ -12,6 +12,7 @@ import { Transaction } from '../../types';
 export const BillingModule: React.FC = () => {
   const {
     transactions,
+    loadingTransactions,
     setSelectedInvoice,
     isNewBillOpen,
     setIsNewBillOpen,
@@ -63,6 +64,14 @@ export const BillingModule: React.FC = () => {
       return matchesSearch && matchesStatus && matchesMethod && matchesDate;
     });
   }, [transactions, search, selectedStatus, selectedMethod, selectedDateFilter]);
+
+  if (loadingTransactions) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+        <CircularProgress sx={{ color: '#6A3F4D' }} />
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ p: { xs: 2, sm: 3, md: 4 }, bgcolor: '#F8F4EE', minHeight: '100vh' }}>

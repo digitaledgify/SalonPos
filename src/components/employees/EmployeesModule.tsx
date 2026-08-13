@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box } from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
 import { EmployeesProvider, useEmployees } from './EmployeesContext';
 import { EmployeesPageHeader } from './EmployeesPageHeader';
 import { EmployeesSummaryCards } from './EmployeesSummaryCards';
@@ -14,7 +14,15 @@ import { AssignShiftModal } from './AssignShiftModal';
 import { AdjustCommissionModal } from './AdjustCommissionModal';
 
 const EmployeesContent: React.FC = () => {
-  const { activeTab } = useEmployees();
+  const { activeTab, loadingEmployees } = useEmployees();
+
+  if (loadingEmployees) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+        <CircularProgress sx={{ color: '#6A3F4D' }} />
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ p: { xs: 2, sm: 3, md: 4 }, maxWidth: 1600, mx: 'auto' }}>

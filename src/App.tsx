@@ -1,4 +1,5 @@
 import React from 'react';
+import { Routes, Route } from 'react-router-dom';
 import { Box, ThemeProvider, CssBaseline, Snackbar, Alert, CircularProgress } from '@mui/material';
 import { salonTheme } from './theme/salonTheme';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -16,6 +17,7 @@ import { ExpensesModule } from './components/expenses/ExpensesModule';
 import { ReportsModule } from './components/reports/ReportsModule';
 import { SettingsModule } from './components/settings/SettingsModule';
 import { AuthScreen } from './components/auth/AuthScreen';
+import { SuperAdminDashboard } from './components/auth/SuperAdminDashboard';
 
 function MainAppContent() {
   const { activeNavItem, toastMessage, hideToast } = useDashboard();
@@ -90,8 +92,10 @@ function AppShell() {
   );
 }
 
-function AuthGate() {
+function SignedInOrLogin() {
   const { session, profile, loading } = useAuth();
+  const superAdminEmail = (import.meta.env.VITE_SUPER_ADMIN_EMAIL || '').trim().toLowerCase();
+  const isSuperAdmin = Boolean(session?.user?.email) && session!.user.email!.toLowerCase() === superAdminEmail;
 
   if (loading) {
     return (
@@ -101,7 +105,12 @@ function AuthGate() {
     );
   }
 
+  if (isSuperAdmin) {
+    return <SuperAdminDashboard />;
+  }
+
   if (!session || !profile) {
+    // Public route — customers only ever see Sign In here, never signup.
     return <AuthScreen />;
   }
 
@@ -117,7 +126,10 @@ export default function App() {
     <ThemeProvider theme={salonTheme}>
       <CssBaseline />
       <AuthProvider>
-        <AuthGate />
+        <Routes>
+          <Route path="/super-admin" element={<SignedInOrLogin />} />
+          <Route path="*" element={<SignedInOrLogin />} />
+        </Routes>
       </AuthProvider>
     </ThemeProvider>
   );

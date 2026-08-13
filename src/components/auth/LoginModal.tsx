@@ -157,7 +157,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ open, onClose, canDismis
             variant="h4"
             sx={{
               fontWeight: 800,
-              fontFamily: '"Poppins", sans-serif',
+              fontFamily: '"Inter", sans-serif',
               letterSpacing: '-0.02em',
               fontSize: { xs: '1.5rem', sm: '1.85rem' },
             }}
@@ -468,7 +468,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ open, onClose, canDismis
                         '& .MuiOutlinedInput-root': {
                           borderRadius: '12px',
                           bgcolor: '#F8F4EE',
-                          fontFamily: '"Poppins", sans-serif',
+                          fontFamily: '"Inter", sans-serif',
                           fontWeight: 700,
                           letterSpacing: showPin ? 'normal' : '0.2em',
                         },
