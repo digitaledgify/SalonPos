@@ -28,7 +28,7 @@ export const DEMO_USERS: UserAccount[] = [
     name: 'Reception User',
     email: 'reception@mysalon.com',
     role: 'Reception',
-    designation: 'Front Desk & POS Manager',
+    designation: 'Receptionist',
     avatarUrl: '',
     pin: '4321',
     phone: '',
@@ -51,7 +51,6 @@ export const DEMO_USERS: UserAccount[] = [
     pin: '5678',
     phone: '',
     permissions: [
-      'My Daily Schedule',
       'Chair Status & Check-In',
       'Customer Notes & Photos',
       'Services & Add-Ons',
@@ -79,7 +78,7 @@ export const ROLE_DETAILS: Record<UserRole, RoleMeta> = {
     color: '#6A3F4D',
     bgColor: '#F8F4EE',
     borderColor: '#EBD9DF',
-    description: 'Unrestricted control over financial reports, staff payroll, inventory restocking, expenses, and settings.',
+    description: 'Access to financial reports, staff payroll, inventory restocking, expenses, and settings.',
     defaultPin: '1234',
   },
   Reception: {

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Session } from '@supabase/supabase-js';
-import { supabase, supabaseInviteClient } from '../lib/supabaseClient';
+import { supabase } from '../lib/supabaseClient';
 import { UserRole } from '../types';
 
 export interface Profile {
@@ -34,19 +34,10 @@ interface AuthContextType {
   authError: string | null;
   // Existing salon staff logging in
   signIn: (email: string, password: string) => Promise<boolean>;
-  // Brand new salon owner signing up — creates the salon AND the first Admin profile
-  signUpNewSalon: (params: {
-    salonName: string;
-    salonCode: string;
-    adminName: string;
-    email: string;
-    password: string;
-  }) => Promise<boolean>;
   // Admin creates a login for a Reception or Stylist staff member in their own salon
   inviteStaff: (params: {
     name: string;
     email: string;
-    password: string;
     role: UserRole;
     designation: string;
   }) => Promise<{ success: boolean; error?: string }>;
@@ -61,7 +52,7 @@ function mapProfileRow(row: any, email: string): Profile {
     id: row.id,
     salonId: row.salon_id,
     name: row.name,
-    email,
+    email: row.email || email,
     role: row.role,
     designation: row.designation ?? '',
     phone: row.phone ?? '',
@@ -141,8 +132,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => listener.subscription.unsubscribe();
   }, []);
 
-  const signIn = async (email: string, password: string): Promise<boolean> => {
+  const signIn = async (login: string, password: string): Promise<boolean> => {
     setAuthError(null);
+    let email = login.trim().toLowerCase();
+
+    if (!email.includes('@')) {
+      try {
+        const response = await fetch('/api/resolve-login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ login: login.trim() }),
+        });
+        const data = await response.json();
+        if (!response.ok || !data.email) {
+          setAuthError(data.error || 'User ID not found.');
+          return false;
+        }
+        email = data.email;
+      } catch {
+        setAuthError('Could not resolve the User ID. Please try your email address.');
+        return false;
+      }
+    }
+
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
       setAuthError(error.message);
@@ -151,83 +163,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return true;
   };
 
-  const signUpNewSalon: AuthContextType['signUpNewSalon'] = async ({
-    salonName,
-    salonCode,
-    adminName,
-    email,
-    password,
-  }) => {
-    setAuthError(null);
-
-    // 1. Create the salon record first
-    const { data: newSalon, error: salonErr } = await supabase
-      .from('salons')
-      .insert({ name: salonName, code: salonCode })
-      .select()
-      .single();
-
-    if (salonErr || !newSalon) {
-      setAuthError(salonErr?.message || 'Could not create salon. The salon code may already be taken.');
-      return false;
-    }
-
-    // 2. Create the auth user
-    const { data: signUpData, error: signUpErr } = await supabase.auth.signUp({
-      email,
-      password,
-    });
-
-    if (signUpErr || !signUpData.user) {
-      setAuthError(signUpErr?.message || 'Could not create account.');
-      return false;
-    }
-
-    // 3. Create the Admin profile, linked to both the new user and the new salon
-    const { error: profileErr } = await supabase.from('profiles').insert({
-      id: signUpData.user.id,
-      salon_id: newSalon.id,
-      name: adminName,
-      role: 'Admin',
-      designation: 'Salon Owner / Admin',
-    });
-
-    if (profileErr) {
-      setAuthError(profileErr.message);
-      return false;
-    }
-
-    return true;
-  };
-
-  const inviteStaff: AuthContextType['inviteStaff'] = async ({ name, email, password, role, designation }) => {
+  const inviteStaff: AuthContextType['inviteStaff'] = async ({ name, email, role, designation }) => {
     if (!profile || profile.role !== 'Admin') {
       return { success: false, error: 'Only an Admin can add staff.' };
     }
 
-    // 1. Create the new login using the ISOLATED invite client, so this
-    //    never touches the Admin's own active session.
-    const { data: signUpData, error: signUpErr } = await supabaseInviteClient.auth.signUp({
-      email,
-      password,
-    });
-
-    if (signUpErr || !signUpData.user) {
-      return { success: false, error: signUpErr?.message || 'Could not create staff login.' };
+    const { data: sessionData } = await supabase.auth.getSession();
+    const accessToken = sessionData.session?.access_token;
+    if (!accessToken) {
+      return { success: false, error: 'Your session expired — please sign in again.' };
     }
 
-    // 2. Insert their profile using the ADMIN's own authenticated client,
-    //    so it satisfies the "Admins can add staff to their own salon" RLS policy.
-    const { error: profileErr } = await supabase.from('profiles').insert({
-      id: signUpData.user.id,
-      salon_id: profile.salonId,
-      name,
-      role,
-      designation,
+    const { data, error } = await supabase.functions.invoke('invite-staff', {
+      body: { name, email, role, designation },
+      headers: { Authorization: `Bearer ${accessToken}` },
     });
 
-    if (profileErr) {
-      return { success: false, error: profileErr.message };
+    if (error) {
+      return { success: false, error: error.message || 'Could not send invite.' };
+    }
+    if (data?.error) {
+      return { success: false, error: data.error };
     }
 
     return { success: true };
@@ -260,7 +216,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         loading,
         authError,
         signIn,
-        signUpNewSalon,
         inviteStaff,
         fetchSalonStaff,
         signOut,

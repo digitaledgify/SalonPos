@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import {
   INITIAL_APPOINTMENTS,
   INITIAL_BIRTHDAYS,
@@ -29,6 +29,7 @@ import {
 } from '../types';
 import { DEMO_USERS } from '../constants/users';
 import { useAuth } from './AuthContext';
+import { supabase } from '../lib/supabaseClient';
 
 interface DashboardContextType {
   // Multi-Tenant / Multi-Salon Outlets
@@ -55,7 +56,9 @@ interface DashboardContextType {
   
   // Data State
   transactions: Transaction[];
+  loadingTransactions: boolean;
   appointments: Appointment[];
+  loadingAppointments: boolean;
   inventory: InventoryItem[];
   notifications: NotificationItem[];
   stylists: Stylist[];
@@ -107,6 +110,7 @@ const DashboardContext = createContext<DashboardContextType | undefined>(undefin
 
 export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { profile, salon: authSalon, signOut: authSignOut } = useAuth();
+  const salonId = profile?.salonId ?? null;
 
   // Build the outlet from the real salon record (falls back to the local
   // placeholder only if something is still loading).
@@ -202,8 +206,88 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [role, setRoleState] = useState<UserRole>('Admin');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const [transactions, setTransactions] = useState<Transaction[]>(INITIAL_TRANSACTIONS);
-  const [appointments, setAppointments] = useState<Appointment[]>(INITIAL_APPOINTMENTS);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loadingTransactions, setLoadingTransactions] = useState(true);
+
+  function rowToTransaction(row: any): Transaction {
+    return {
+      id: row.id,
+      invoiceNo: row.invoice_no,
+      customerName: row.customer_name,
+      customerPhone: row.customer_phone,
+      stylistName: row.stylist_name,
+      services: row.services || [],
+      amount: Number(row.amount),
+      paymentMethod: row.payment_method,
+      status: row.status,
+      time: row.time,
+      date: row.date,
+    };
+  }
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!salonId) {
+      setTransactions([]);
+      setLoadingTransactions(false);
+      return;
+    }
+    setLoadingTransactions(true);
+    supabase
+      .from('transactions')
+      .select('*')
+      .eq('salon_id', salonId)
+      .order('created_at', { ascending: false })
+      .then(({ data, error }) => {
+        if (cancelled) return;
+        if (!error) setTransactions((data ?? []).map(rowToTransaction));
+        setLoadingTransactions(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [salonId]);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [loadingAppointments, setLoadingAppointments] = useState(true);
+
+  function rowToAppointment(row: any): Appointment {
+    return {
+      id: row.id,
+      time: row.time,
+      customerName: row.customer_name,
+      customerPhone: row.customer_phone,
+      stylistName: row.stylist_name,
+      service: row.service,
+      amount: Number(row.amount),
+      status: row.status,
+      notes: row.notes,
+    };
+  }
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!salonId) {
+      setAppointments([]);
+      setLoadingAppointments(false);
+      return;
+    }
+    setLoadingAppointments(true);
+    supabase
+      .from('appointments')
+      .select('*')
+      .eq('salon_id', salonId)
+      .order('created_at', { ascending: false })
+      .then(({ data, error }) => {
+        if (cancelled) return;
+        if (!error) setAppointments((data ?? []).map(rowToAppointment));
+        setLoadingAppointments(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [salonId]);
   const [inventory, setInventory] = useState<InventoryItem[]>(INITIAL_INVENTORY);
   const [notifications, setNotifications] = useState<NotificationItem[]>(INITIAL_NOTIFICATIONS);
   const [stylists] = useState<Stylist[]>(INITIAL_STYLISTS);
@@ -285,6 +369,9 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     setAppointments((prev) =>
       prev.map((apt) => (apt.id === id ? { ...apt, status } : apt))
     );
+    supabase.from('appointments').update({ status }).eq('id', id).then(({ error }) => {
+      if (error) showToast('Failed to sync appointment status to the database.');
+    });
     showToast(`Appointment status updated to ${status}`);
   };
 
@@ -294,6 +381,25 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       id: `apt-${Date.now()}`,
     };
     setAppointments((prev) => [newApt, ...prev]);
+    if (salonId) {
+      supabase
+        .from('appointments')
+        .insert({
+          id: newApt.id,
+          salon_id: salonId,
+          time: newApt.time,
+          customer_name: newApt.customerName,
+          customer_phone: newApt.customerPhone,
+          stylist_name: newApt.stylistName,
+          service: newApt.service,
+          amount: newApt.amount,
+          status: newApt.status,
+          notes: newApt.notes || '',
+        })
+        .then(({ error }) => {
+          if (error) showToast('Saved locally, but failed to sync appointment to the database.');
+        });
+    }
     showToast(`New appointment booked for ${newAptData.customerName}!`);
   };
 
@@ -313,7 +419,29 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     };
 
     setTransactions((prev) => [newTx, ...prev]);
-    
+
+    if (salonId) {
+      supabase
+        .from('transactions')
+        .insert({
+          id: newTx.id,
+          salon_id: salonId,
+          invoice_no: newTx.invoiceNo,
+          customer_name: newTx.customerName,
+          customer_phone: newTx.customerPhone,
+          stylist_name: newTx.stylistName,
+          services: newTx.services,
+          amount: newTx.amount,
+          payment_method: newTx.paymentMethod,
+          status: newTx.status,
+          time: newTx.time,
+          date: newTx.date,
+        })
+        .then(({ error }) => {
+          if (error) showToast('Saved locally, but failed to sync invoice to the database.');
+        });
+    }
+
     // Dynamically update Today's Sales chart and revenue
     if (newTx.status === 'Paid') {
       setDailySales((prev) =>
@@ -448,7 +576,9 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         searchQuery,
         setSearchQuery,
         transactions,
+        loadingTransactions,
         appointments,
+        loadingAppointments,
         inventory,
         notifications,
         stylists,

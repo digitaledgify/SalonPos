@@ -1,10 +1,14 @@
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
-  readonly VITE_SUPABASE_URL: https://fenqkjityvbtouuzkap.supabase.co;
-  readonly VITE_SUPABASE_ANON_KEY: sb_publishable_UHb2fTZvrUNJTwYEardD4A_YhHJNHKN;
+  readonly VITE_SUPABASE_URL: string;
+  readonly VITE_SUPABASE_ANON_KEY: string;
 }
 
 interface ImportMeta {
   readonly env: ImportMetaEnv;
+}
+
+interface ImportMetaEnv {
+  readonly VITE_SUPER_ADMIN_EMAIL: string;
 }

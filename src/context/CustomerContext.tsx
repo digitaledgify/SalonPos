@@ -1,8 +1,11 @@
-import React, { createContext, useContext, useState, useMemo } from 'react';
+import React, { createContext, useContext, useState, useMemo, useEffect } from 'react';
 import { Customer, CustomerFilterState, CustomerVisit, PhotoCategory } from '../types/customer';
+import { supabase } from '../lib/supabaseClient';
+import { useAuth } from './AuthContext';
 
 interface CustomerContextType {
   customers: Customer[];
+  loadingCustomers: boolean;
   selectedCustomer: Customer | null;
   setSelectedCustomer: (c: Customer | null) => void;
   isCustomerFormOpen: boolean;
@@ -11,7 +14,7 @@ interface CustomerContextType {
   setCustomerToEdit: (c: Customer | null) => void;
   filters: CustomerFilterState;
   setFilters: React.Dispatch<React.SetStateAction<CustomerFilterState>>;
-  
+
   // Quick Booking / Billing modals integration
   isBookingOpen: boolean;
   setIsBookingOpen: (open: boolean) => void;
@@ -42,8 +45,17 @@ interface CustomerContextType {
 
 const CustomerContext = createContext<CustomerContextType | undefined>(undefined);
 
+function rowToCustomer(row: any): Customer {
+  // The full Customer object lives in `data`; id is kept in sync with the row id.
+  return { ...(row.data as Customer), id: row.id };
+}
+
 export const CustomerProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [customers, setCustomers] = useState<Customer[]>(() => []);
+  const { profile } = useAuth();
+  const salonId = profile?.salonId ?? null;
+
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [loadingCustomers, setLoadingCustomers] = useState(true);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [isCustomerFormOpen, setIsCustomerFormOpen] = useState(false);
   const [customerToEdit, setCustomerToEdit] = useState<Customer | null>(null);
@@ -71,6 +83,64 @@ export const CustomerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setToast(null);
   };
 
+  // Load this salon's customers from the database whenever the logged-in
+  // salon changes (e.g. right after login).
+  useEffect(() => {
+    let cancelled = false;
+
+    if (!salonId) {
+      setCustomers([]);
+      setLoadingCustomers(false);
+      return;
+    }
+
+    setLoadingCustomers(true);
+    supabase
+      .from('customers')
+      .select('*')
+      .eq('salon_id', salonId)
+      .order('created_at', { ascending: false })
+      .then(({ data, error }) => {
+        if (cancelled) return;
+        if (error) {
+          showCustomerToast('Could not load customers from the database.', 'warning');
+          setCustomers([]);
+        } else {
+          setCustomers((data ?? []).map(rowToCustomer));
+        }
+        setLoadingCustomers(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [salonId]);
+
+  // Persist a full customer object to the database (insert-or-update).
+  const persistCustomer = async (customer: Customer) => {
+    if (!salonId) return;
+    const { error } = await supabase.from('customers').upsert({
+      id: customer.id,
+      salon_id: salonId,
+      full_name: customer.fullName,
+      phone: customer.phone,
+      email: customer.email,
+      data: customer,
+      updated_at: new Date().toISOString(),
+    });
+    if (error) {
+      showCustomerToast('Saved locally, but failed to sync to the database.', 'warning');
+    }
+  };
+
+  const persistDelete = async (id: string) => {
+    const { error } = await supabase.from('customers').delete().eq('id', id);
+    if (error) {
+      showCustomerToast('Failed to delete from the database.', 'warning');
+    }
+  };
+
   const checkPhoneExists = (phone: string, currentId?: string): boolean => {
     const cleanPhone = phone.replace(/\s+/g, '').replace('+91', '');
     return customers.some((c) => {
@@ -85,7 +155,7 @@ export const CustomerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       return { success: false, error: 'A customer with this phone number already exists!' };
     }
 
-    const newId = `CUST-${1001 + customers.length}`;
+    const newId = `CUST-${Date.now().toString(36).toUpperCase()}`;
     const firstName = data.firstName || 'New';
     const lastName = data.lastName || 'Customer';
     const fullName = `${firstName} ${lastName}`;
@@ -106,7 +176,7 @@ export const CustomerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       birthdayFormatted: data.dob ? new Date(data.dob).toLocaleDateString('en-US', { day: 'numeric', month: 'short' }) : '01 Jan',
       isBirthdayToday: false,
       isBirthdayThisWeek: false,
-      photoUrl: data.photoUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=250',
+      photoUrl: data.photoUrl || '',
       address: data.address || 'Local Resident',
       emergencyContact: data.emergencyContact || '',
       occupation: data.occupation || 'Consultant',
@@ -121,8 +191,8 @@ export const CustomerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         benefits: ['Standard Member Perks', `${discountMap[tier]}% Service Discount`],
       },
 
-      preferredStylist: data.preferredStylist || 'Aarav Kapoor',
-      preferredServices: data.preferredServices || ['Hair Cut & Styling'],
+      preferredStylist: data.preferredStylist || '',
+      preferredServices: data.preferredServices || [],
       skinType: data.skinType || 'Normal',
       hairType: data.hairType || 'Straight Wavy',
 
@@ -153,11 +223,13 @@ export const CustomerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     };
 
     setCustomers((prev) => [newCustomer, ...prev]);
+    persistCustomer(newCustomer);
     showCustomerToast(`Customer ${fullName} registered successfully!`);
     return { success: true };
   };
 
   const updateCustomer = (id: string, data: Partial<Customer>) => {
+    let updatedForSync: Customer | null = null;
     setCustomers((prev) =>
       prev.map((c) => {
         if (c.id === id) {
@@ -168,11 +240,13 @@ export const CustomerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           if (selectedCustomer?.id === id) {
             setSelectedCustomer(updated);
           }
+          updatedForSync = updated;
           return updated;
         }
         return c;
       })
     );
+    if (updatedForSync) persistCustomer(updatedForSync);
     showCustomerToast('Customer profile updated!');
   };
 
@@ -182,6 +256,7 @@ export const CustomerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     if (selectedCustomer?.id === id) {
       setSelectedCustomer(null);
     }
+    persistDelete(id);
     showCustomerToast(`Deleted customer profile for ${target?.fullName || id}.`);
   };
 
@@ -194,16 +269,19 @@ export const CustomerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       isImportant: true,
     };
 
+    let updatedForSync: Customer | null = null;
     setCustomers((prev) =>
       prev.map((c) => {
         if (c.id === customerId) {
           const updated = { ...c, notes: [newNote, ...c.notes] };
           if (selectedCustomer?.id === customerId) setSelectedCustomer(updated);
+          updatedForSync = updated;
           return updated;
         }
         return c;
       })
     );
+    if (updatedForSync) persistCustomer(updatedForSync);
     showCustomerToast('Customer note added!');
   };
 
@@ -217,20 +295,24 @@ export const CustomerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       uploadedAt: new Date().toISOString().split('T')[0],
     };
 
+    let updatedForSync: Customer | null = null;
     setCustomers((prev) =>
       prev.map((c) => {
         if (c.id === customerId) {
           const updated = { ...c, photos: [newPhoto, ...c.photos] };
           if (selectedCustomer?.id === customerId) setSelectedCustomer(updated);
+          updatedForSync = updated;
           return updated;
         }
         return c;
       })
     );
+    if (updatedForSync) persistCustomer(updatedForSync);
     showCustomerToast('Photo added to customer gallery!');
   };
 
   const addLoyaltyPoints = (customerId: string, points: number) => {
+    let updatedForSync: Customer | null = null;
     setCustomers((prev) =>
       prev.map((c) => {
         if (c.id === customerId) {
@@ -244,16 +326,19 @@ export const CustomerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           };
           const updated = { ...c, loyalty: updatedLoyalty };
           if (selectedCustomer?.id === customerId) setSelectedCustomer(updated);
+          updatedForSync = updated;
           return updated;
         }
         return c;
       })
     );
+    if (updatedForSync) persistCustomer(updatedForSync);
     showCustomerToast(`Added ${points} loyalty points!`);
   };
 
   const redeemLoyaltyPoints = (customerId: string, pointsToRedeem: number): boolean => {
     let success = false;
+    let updatedForSync: Customer | null = null;
     setCustomers((prev) =>
       prev.map((c) => {
         if (c.id === customerId) {
@@ -275,11 +360,13 @@ export const CustomerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           if (selectedCustomer?.id === customerId) setSelectedCustomer(updated);
           showCustomerToast(`Redeemed ${pointsToRedeem} points (₹${pointsToRedeem} discount applied)!`);
           success = true;
+          updatedForSync = updated;
           return updated;
         }
         return c;
       })
     );
+    if (updatedForSync) persistCustomer(updatedForSync);
     return success;
   };
 
@@ -292,6 +379,7 @@ export const CustomerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     // Calculate earned loyalty points (1 point per ₹100 spent)
     const earnedPoints = Math.floor(visitData.totalPaid / 100);
 
+    let updatedForSync: Customer | null = null;
     setCustomers((prev) =>
       prev.map((c) => {
         if (c.id === customerId) {
@@ -313,16 +401,18 @@ export const CustomerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
             visits: [newVisit, ...c.visits],
           };
           if (selectedCustomer?.id === customerId) setSelectedCustomer(updated);
+          updatedForSync = updated;
           return updated;
         }
         return c;
       })
     );
+    if (updatedForSync) persistCustomer(updatedForSync);
     showCustomerToast(`Visit & Invoice logged! Customer earned ${earnedPoints} loyalty points.`);
   };
 
   const sendBirthdayWish = (customer: Customer) => {
-    const message = `Hi ${customer.firstName}! Beige Unisex Salon wishes you a joyous Happy Birthday! 🎉 Enjoy an exclusive 25% OFF on your visit today. Show this message at check-in!`;
+    const message = `Hi ${customer.firstName}! Your salon wishes you a joyous Happy Birthday! 🎉 Enjoy an exclusive 25% OFF on your visit today. Show this message at check-in!`;
     const encoded = encodeURIComponent(message);
     window.open(`https://wa.me/${customer.phone.replace(/[^0-9]/g, '')}?text=${encoded}`, '_blank');
     showCustomerToast(`Birthday wish sent to ${customer.firstName} on WhatsApp!`);
@@ -348,11 +438,11 @@ export const CustomerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', `Beige_Salon_Customers_${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute('download', `Salon_Customers_${new Date().toISOString().split('T')[0]}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    showCustomerToast('Exported 100+ customers to CSV!');
+    showCustomerToast(`Exported ${customers.length} customers to CSV!`);
   };
 
   const importCustomersCSV = (csvText: string) => {
@@ -424,6 +514,7 @@ export const CustomerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     <CustomerContext.Provider
       value={{
         customers: filteredCustomers,
+        loadingCustomers,
         selectedCustomer,
         setSelectedCustomer,
         isCustomerFormOpen,
