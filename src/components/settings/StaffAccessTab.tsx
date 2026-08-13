@@ -13,8 +13,6 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  IconButton,
-  InputAdornment,
   CircularProgress,
   Table,
   TableHead,
@@ -23,10 +21,7 @@ import {
   TableCell,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 import { useAuth, Profile } from '../../context/AuthContext';
 import { UserRole } from '../../types';
 
@@ -35,15 +30,6 @@ const roleColor: Record<UserRole, string> = {
   Reception: '#0288D1',
   Stylist: '#2E7D32',
 };
-
-function generateTempPassword(): string {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
-  let out = '';
-  for (let i = 0; i < 10; i++) {
-    out += chars[Math.floor(Math.random() * chars.length)];
-  }
-  return out;
-}
 
 export const StaffAccessTab: React.FC = () => {
   const { profile, inviteStaff, fetchSalonStaff } = useAuth();
@@ -56,12 +42,9 @@ export const StaffAccessTab: React.FC = () => {
   const [email, setEmail] = useState('');
   const [role, setRole] = useState<UserRole>('Reception');
   const [designation, setDesignation] = useState('');
-  const [password, setPassword] = useState(generateTempPassword());
-  const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [createdCreds, setCreatedCreds] = useState<{ email: string; password: string } | null>(null);
-  const [copied, setCopied] = useState(false);
+  const [invitedEmail, setInvitedEmail] = useState<string | null>(null);
 
   const loadStaff = async () => {
     setLoadingStaff(true);
@@ -80,9 +63,8 @@ export const StaffAccessTab: React.FC = () => {
     setEmail('');
     setRole('Reception');
     setDesignation('');
-    setPassword(generateTempPassword());
     setError(null);
-    setCreatedCreds(null);
+    setInvitedEmail(null);
   };
 
   const handleOpen = () => {
@@ -102,7 +84,6 @@ export const StaffAccessTab: React.FC = () => {
     const result = await inviteStaff({
       name: name.trim(),
       email: email.trim(),
-      password,
       role,
       designation: designation.trim() || role,
     });
@@ -114,32 +95,32 @@ export const StaffAccessTab: React.FC = () => {
       return;
     }
 
-    setCreatedCreds({ email: email.trim(), password });
+    setInvitedEmail(email.trim());
     loadStaff();
   };
 
-  const handleCopy = () => {
-    if (!createdCreds) return;
-    navigator.clipboard.writeText(`Email: ${createdCreds.email}\nPassword: ${createdCreds.password}`);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
   if (profile?.role !== 'Admin') {
-    return (
-      <Alert severity="info">Only an Admin can view and manage staff login access.</Alert>
-    );
+    return <Alert severity="info">Only an Admin can view and manage staff login access.</Alert>;
   }
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, flexWrap: 'wrap', gap: 2 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          mb: 3,
+          flexWrap: 'wrap',
+          gap: 2,
+        }}
+      >
         <Box>
           <Typography variant="h6" sx={{ fontWeight: 800, color: '#2D1F24' }}>
             Staff Login Access
           </Typography>
           <Typography variant="body2" sx={{ color: '#6E5C63' }}>
-            Create separate logins for Reception and Stylist staff in your salon.
+            Invite Reception and Stylist staff to your salon by email — they'll get a link to set their own password.
           </Typography>
         </Box>
         <Button
@@ -154,7 +135,7 @@ export const StaffAccessTab: React.FC = () => {
             fontWeight: 700,
           }}
         >
-          Add Staff Login
+          Invite Staff
         </Button>
       </Box>
 
@@ -201,37 +182,14 @@ export const StaffAccessTab: React.FC = () => {
       </Paper>
 
       <Dialog open={isModalOpen} onClose={handleClose} maxWidth="sm" fullWidth>
-        <DialogTitle sx={{ fontWeight: 800 }}>Add Staff Login</DialogTitle>
+        <DialogTitle sx={{ fontWeight: 800 }}>Invite Staff</DialogTitle>
         <DialogContent>
-          {createdCreds ? (
+          {invitedEmail ? (
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 1 }}>
-              <Alert icon={<CheckCircleIcon />} severity="success">
-                Login created. Share these credentials with your staff member — they'll only be shown once.
+              <Alert icon={<MarkEmailReadIcon />} severity="success">
+                Invite sent to <strong>{invitedEmail}</strong>. They'll receive an email with a link to set their
+                own password and log in.
               </Alert>
-              <Paper variant="outlined" sx={{ p: 2, borderRadius: '12px', bgcolor: '#F8F4EE' }}>
-                <Typography variant="caption" sx={{ color: '#6E5C63', fontWeight: 700 }}>
-                  EMAIL
-                </Typography>
-                <Typography sx={{ fontWeight: 700, mb: 1.5 }}>{createdCreds.email}</Typography>
-                <Typography variant="caption" sx={{ color: '#6E5C63', fontWeight: 700 }}>
-                  TEMPORARY PASSWORD
-                </Typography>
-                <Typography sx={{ fontWeight: 700, fontFamily: 'monospace', fontSize: '1.1rem' }}>
-                  {createdCreds.password}
-                </Typography>
-              </Paper>
-              <Button
-                variant="outlined"
-                startIcon={<ContentCopyIcon />}
-                onClick={handleCopy}
-                sx={{ borderRadius: '10px', textTransform: 'none' }}
-              >
-                {copied ? 'Copied!' : 'Copy Credentials'}
-              </Button>
-              <Typography variant="caption" sx={{ color: '#6E5C63' }}>
-                Depending on your Supabase project's email confirmation setting, this staff member may need to
-                confirm their email before their first login.
-              </Typography>
             </Box>
           ) : (
             <Box
@@ -275,42 +233,20 @@ export const StaffAccessTab: React.FC = () => {
                 onChange={(e) => setDesignation(e.target.value)}
                 fullWidth
               />
-              <TextField
-                label="Temporary Password"
-                type={showPassword ? 'text' : 'password'}
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                helperText="Auto-generated — you can edit it, or regenerate below."
-                fullWidth
-                slotProps={{
-                  input: {
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton onClick={() => setShowPassword((s) => !s)} edge="end">
-                          {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  },
-                }}
-              />
-              <Button
-                size="small"
-                onClick={() => setPassword(generateTempPassword())}
-                sx={{ alignSelf: 'flex-start', textTransform: 'none', color: '#6A3F4D', fontWeight: 700 }}
-              >
-                Regenerate Password
-              </Button>
             </Box>
           )}
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
-          {createdCreds ? (
+          {invitedEmail ? (
             <Button
               onClick={handleClose}
               variant="contained"
-              sx={{ bgcolor: '#6A3F4D', '&:hover': { bgcolor: '#4A2B35' }, borderRadius: '10px', textTransform: 'none' }}
+              sx={{
+                bgcolor: '#6A3F4D',
+                '&:hover': { bgcolor: '#4A2B35' },
+                borderRadius: '10px',
+                textTransform: 'none',
+              }}
             >
               Done
             </Button>
@@ -324,9 +260,14 @@ export const StaffAccessTab: React.FC = () => {
                 form="invite-staff-form"
                 variant="contained"
                 disabled={submitting}
-                sx={{ bgcolor: '#6A3F4D', '&:hover': { bgcolor: '#4A2B35' }, borderRadius: '10px', textTransform: 'none' }}
+                sx={{
+                  bgcolor: '#6A3F4D',
+                  '&:hover': { bgcolor: '#4A2B35' },
+                  borderRadius: '10px',
+                  textTransform: 'none',
+                }}
               >
-                {submitting ? <CircularProgress size={20} sx={{ color: '#fff' }} /> : 'Create Login'}
+                {submitting ? <CircularProgress size={20} sx={{ color: '#fff' }} /> : 'Send Invite'}
               </Button>
             </>
           )}
