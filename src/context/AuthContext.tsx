@@ -82,6 +82,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [authError, setAuthError] = useState<string | null>(null);
 
   const loadProfileAndSalon = async (userId: string, email: string) => {
+    // The Super Admin is a platform-level account and intentionally has no
+    // salon/profile row. Do not query public.profiles for this account.
+    const configuredSuperAdmin = (import.meta.env.VITE_SUPER_ADMIN_EMAIL || '').trim().toLowerCase();
+    if (configuredSuperAdmin && email.trim().toLowerCase() === configuredSuperAdmin) {
+      setProfile(null);
+      setSalon(null);
+      return;
+    }
+
     const { data: profileRow, error: profileErr } = await supabase
       .from('profiles')
       .select('*')
