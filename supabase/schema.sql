@@ -16,6 +16,12 @@ create table if not exists public.salons (
   currency_symbol text default '₹',
   tax_rate_percent numeric default 18,
   status text not null default 'Active' check (status in ('Active', 'Suspended', 'Pending')),
+  subscription_plan text not null default 'Trial',
+  subscription_status text not null default 'Trial' check (subscription_status in ('Trial', 'Active', 'Expired', 'Cancelled')),
+  subscription_start_date date default current_date,
+  subscription_expiry_date date,
+  subscription_amount numeric(12,2) not null default 0,
+  next_renewal_date date,
   created_at timestamptz default now()
 );
 
