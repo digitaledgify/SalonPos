@@ -40,6 +40,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     address = '',
     city = '',
     password,
+    subscriptionPlan = 'Trial',
+    subscriptionStatus = 'Trial',
+    subscriptionStartDate = new Date().toISOString().slice(0, 10),
+    subscriptionExpiryDate = null,
+    subscriptionAmount = 0,
+    nextRenewalDate = null,
   } = req.body || {};
 
   const cleanName = String(salonName || '').trim();
@@ -47,6 +53,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const cleanOwner = String(ownerName || '').trim();
   const cleanEmail = String(email || '').trim().toLowerCase();
   const cleanPassword = String(password || '');
+  const cleanSubscriptionPlan = String(subscriptionPlan || 'Trial').trim().slice(0, 40) || 'Trial';
+  const allowedSubscriptionStatuses = new Set(['Trial', 'Active', 'Expired', 'Cancelled']);
+  const cleanSubscriptionStatus = String(subscriptionStatus || 'Trial');
+  const cleanSubscriptionAmount = Number(subscriptionAmount);
+  const cleanSubscriptionStartDate = subscriptionStartDate ? String(subscriptionStartDate) : null;
+  const cleanSubscriptionExpiryDate = subscriptionExpiryDate ? String(subscriptionExpiryDate) : null;
+  const cleanNextRenewalDate = nextRenewalDate ? String(nextRenewalDate) : null;
+
+  if (!allowedSubscriptionStatuses.has(cleanSubscriptionStatus)) return json(res, 400, { error: 'Invalid subscription status.' });
+  if (!Number.isFinite(cleanSubscriptionAmount) || cleanSubscriptionAmount < 0) return json(res, 400, { error: 'Subscription amount must be a non-negative number.' });
+  for (const [label, value] of [['start', cleanSubscriptionStartDate], ['expiry', cleanSubscriptionExpiryDate], ['renewal', cleanNextRenewalDate]] as const) {
+    if (value && !/^\d{4}-\d{2}-\d{2}$/.test(value)) return json(res, 400, { error: `Subscription ${label} date must be YYYY-MM-DD.` });
+  }
 
   if (!cleanName || !cleanCode || !cleanOwner || !cleanEmail || cleanPassword.length < 6) {
     return json(res, 400, { error: 'Salon name, salon code, admin name, email and a password of at least 6 characters are required.' });
@@ -88,6 +107,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       phone: String(phone || '').trim(),
       email: cleanEmail,
       status: 'Active',
+      subscription_plan: cleanSubscriptionPlan,
+      subscription_status: cleanSubscriptionStatus,
+      subscription_start_date: cleanSubscriptionStartDate,
+      subscription_expiry_date: cleanSubscriptionExpiryDate,
+      subscription_amount: cleanSubscriptionAmount,
+      next_renewal_date: cleanNextRenewalDate,
     })
     .select('*')
     .single();
