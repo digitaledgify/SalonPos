@@ -18,13 +18,17 @@ import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
+import StorefrontIcon from '@mui/icons-material/Storefront';
 import { useAuth } from '../../context/AuthContext';
+import { SuperAdminManageSalon, SuperAdminSalons } from './SuperAdminSalons';
 
 const SUPER_ADMIN_EMAIL = (import.meta.env.VITE_SUPER_ADMIN_EMAIL || '').trim().toLowerCase();
 
 export const SuperAdminDashboard: React.FC = () => {
   const { session, signOut } = useAuth();
   const [submitting, setSubmitting] = useState(false);
+  const [view, setView] = useState<'home' | 'salons' | 'manage'>('home');
+  const [selectedSalonId, setSelectedSalonId] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [result, setResult] = useState<{ salonName: string; salonCode: string; userId: string; email: string; password: string } | null>(null);
   const [form, setForm] = useState({
@@ -36,6 +40,12 @@ export const SuperAdminDashboard: React.FC = () => {
     address: '',
     city: '',
     password: '',
+    subscriptionPlan: 'Trial',
+    subscriptionStatus: 'Trial',
+    subscriptionStartDate: new Date().toISOString().slice(0, 10),
+    subscriptionExpiryDate: '',
+    subscriptionAmount: '0',
+    nextRenewalDate: '',
   });
 
   const update = (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,7 +76,7 @@ export const SuperAdminDashboard: React.FC = () => {
         email: data.admin.email,
         password: form.password,
       });
-      setForm({ salonName: '', salonCode: '', ownerName: '', email: '', phone: '', address: '', city: '', password: '' });
+      setForm({ salonName: '', salonCode: '', ownerName: '', email: '', phone: '', address: '', city: '', password: '', subscriptionPlan: 'Trial', subscriptionStatus: 'Trial', subscriptionStartDate: new Date().toISOString().slice(0, 10), subscriptionExpiryDate: '', subscriptionAmount: '0', nextRenewalDate: '' });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not onboard the salon.');
     } finally {
@@ -87,6 +97,14 @@ export const SuperAdminDashboard: React.FC = () => {
     );
   }
 
+  if (view === 'salons') {
+    return <SuperAdminSalons onBack={() => setView('home')} onManage={(id) => { setSelectedSalonId(id); setView('manage'); }} />;
+  }
+
+  if (view === 'manage' && selectedSalonId) {
+    return <SuperAdminManageSalon salonId={selectedSalonId} onBack={() => setView('salons')} onSaved={() => undefined} />;
+  }
+
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#F8F4EE', p: { xs: 2, md: 4 } }}>
       <Box sx={{ maxWidth: 1100, mx: 'auto' }}>
@@ -100,7 +118,10 @@ export const SuperAdminDashboard: React.FC = () => {
               <Typography variant="body2" sx={{ color: '#6E5C63' }}>Salon onboarding & account control</Typography>
             </Box>
           </Box>
-          <Button startIcon={<LogoutIcon />} onClick={signOut} sx={{ color: '#6A3F4D', textTransform: 'none', fontWeight: 700 }}>Sign out</Button>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Button startIcon={<StorefrontIcon />} onClick={() => setView('salons')} variant="outlined" sx={{ borderColor: '#D9C8CE', color: '#6A3F4D', borderRadius: '10px', textTransform: 'none', fontWeight: 800 }}>All Salons</Button>
+            <Button startIcon={<LogoutIcon />} onClick={signOut} sx={{ color: '#6A3F4D', textTransform: 'none', fontWeight: 700 }}>Sign out</Button>
+          </Box>
         </Box>
 
         <Grid container spacing={3}>
@@ -127,6 +148,16 @@ export const SuperAdminDashboard: React.FC = () => {
                     <Grid size={{ xs: 12, sm: 6 }}><TextField label="City" fullWidth value={form.city} onChange={update('city')} /></Grid>
                   </Grid>
                   <TextField label="Address" multiline minRows={2} value={form.address} onChange={update('address')} />
+                  <Divider sx={{ my: 1 }} />
+                  <Typography variant="subtitle2" sx={{ fontWeight: 900, color: '#6A3F4D' }}>Subscription</Typography>
+                  <Grid container spacing={2}>
+                    <Grid size={{ xs: 12, sm: 6 }}><TextField select fullWidth label="Plan" value={form.subscriptionPlan} onChange={update('subscriptionPlan')}><MenuItem value="Trial">Trial</MenuItem><MenuItem value="Basic">Basic</MenuItem><MenuItem value="Pro">Pro</MenuItem><MenuItem value="Premium">Premium</MenuItem><MenuItem value="Custom">Custom</MenuItem></TextField></Grid>
+                    <Grid size={{ xs: 12, sm: 6 }}><TextField select fullWidth label="Subscription Status" value={form.subscriptionStatus} onChange={update('subscriptionStatus')}><MenuItem value="Trial">Trial</MenuItem><MenuItem value="Active">Active</MenuItem><MenuItem value="Expired">Expired</MenuItem><MenuItem value="Cancelled">Cancelled</MenuItem></TextField></Grid>
+                    <Grid size={{ xs: 12, sm: 4 }}><TextField fullWidth type="date" label="Start Date" value={form.subscriptionStartDate} onChange={update('subscriptionStartDate')} InputLabelProps={{ shrink: true }} /></Grid>
+                    <Grid size={{ xs: 12, sm: 4 }}><TextField fullWidth type="date" label="Expiry Date" value={form.subscriptionExpiryDate} onChange={update('subscriptionExpiryDate')} InputLabelProps={{ shrink: true }} /></Grid>
+                    <Grid size={{ xs: 12, sm: 4 }}><TextField fullWidth type="number" label="Amount" value={form.subscriptionAmount} onChange={update('subscriptionAmount')} inputProps={{ min: 0, step: 0.01 }} /></Grid>
+                    <Grid size={{ xs: 12 }}><TextField fullWidth type="date" label="Next Renewal Date" value={form.nextRenewalDate} onChange={update('nextRenewalDate')} InputLabelProps={{ shrink: true }} /></Grid>
+                  </Grid>
                   <TextField label="Temporary Password" type="password" required value={form.password} onChange={update('password')} helperText="At least 6 characters. Give this to the salon Admin securely." />
                   <Button type="submit" variant="contained" size="large" disabled={submitting} sx={{ bgcolor: '#6A3F4D', '&:hover': { bgcolor: '#5A3541' }, borderRadius: '12px', py: 1.3, fontWeight: 800 }}>
                     {submitting ? <CircularProgress size={23} sx={{ color: '#fff' }} /> : 'Verify & Create Salon'}

@@ -24,6 +24,7 @@ export interface Salon {
   email: string;
   currencySymbol: string;
   taxRatePercent: number;
+  status: 'Active' | 'Suspended' | 'Pending';
 }
 
 interface AuthContextType {
@@ -71,6 +72,7 @@ function mapSalonRow(row: any): Salon {
     email: row.email ?? '',
     currencySymbol: row.currency_symbol ?? '₹',
     taxRatePercent: row.tax_rate_percent ?? 18,
+    status: row.status ?? 'Active',
   };
 }
 
