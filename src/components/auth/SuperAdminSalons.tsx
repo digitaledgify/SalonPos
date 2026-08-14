@@ -30,7 +30,7 @@ import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
 import SearchIcon from '@mui/icons-material/Search';
-import PauseCircleOutlineIcon from '@mui/icons-material/PauseCircleOutline';
+import { PauseCircle } from 'lucide-react';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import LockResetIcon from '@mui/icons-material/LockReset';
 import { useAuth } from '../../context/AuthContext';
@@ -70,7 +70,7 @@ type Salon = {
 
 const statusChip = (status: Salon['status']) => {
   if (status === 'Active') return { label: 'Active', color: 'success' as const, icon: <CheckCircleIcon /> };
-  if (status === 'Suspended') return { label: 'Suspended', color: 'error' as const, icon: <PauseCircleOutlineIcon /> };
+  if (status === 'Suspended') return { label: 'Suspended', color: 'error' as const, icon: <PauseCircle size={20} /> };
   return { label: 'Pending', color: 'warning' as const, icon: undefined };
 };
 
