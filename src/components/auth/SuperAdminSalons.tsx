@@ -81,7 +81,16 @@ const subscriptionChip = (status: Salon['subscription_status']) => {
   return { label: 'Trial', color: 'warning' as const };
 };
 
-const formatDate = (value?: string | null) => value ? new Intl.DateTimeFormat('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date(`${value}T00:00:00`)) : '—';
+const formatDate = (value?: string | null) => {
+  if (!value) return '—';
+  // `value` may be a plain date ("2026-08-13", e.g. subscription dates) or a
+  // full ISO timestamp ("2026-08-13T10:23:45.123+00:00", e.g. created_at from
+  // Supabase). Only append a time component when one isn't already present,
+  // otherwise Date() parsing fails with "Invalid time value".
+  const date = value.includes('T') ? new Date(value) : new Date(`${value}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return '—';
+  return new Intl.DateTimeFormat('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }).format(date);
+};
 
 export const SuperAdminSalons: React.FC<{ onBack: () => void; onManage: (salonId: string) => void }> = ({ onBack, onManage }) => {
   const { session } = useAuth();
