@@ -164,7 +164,7 @@ export const SuperAdminSalons: React.FC<{ onBack: () => void; onManage: (salonId
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               sx={{ minWidth: { xs: '100%', md: 360 }, flex: 1 }}
-              InputProps={{ startAdornment: <InputAdornment position="start"><SearchIcon sx={{ color: '#8D7A81' }} /></InputAdornment> }}
+              slotProps={{ input: { startAdornment: <InputAdornment position="start"><SearchIcon sx={{ color: '#8D7A81' }} /></InputAdornment> } }}
             />
             <Select size="small" value={status} onChange={(e: SelectChangeEvent) => setStatus(e.target.value as typeof status)} sx={{ minWidth: 150 }}>
               <MenuItem value="All">All statuses</MenuItem>
@@ -372,22 +372,22 @@ export const SuperAdminManageSalon: React.FC<{ salonId: string; onBack: () => vo
                   <Grid size={{ xs: 12 }}><TextField fullWidth label="Salon Name" value={form.name} onChange={update('name')} /></Grid>
                   <Grid size={{ xs: 12, sm: 6 }}><TextField fullWidth label="Salon Code" value={salon.code} disabled helperText="Code is fixed because it is part of the Admin User ID." /></Grid>
                   <Grid size={{ xs: 12, sm: 6 }}><TextField fullWidth label="Status" select value={form.status} onChange={update('status')}><MenuItem value="Active">Active</MenuItem><MenuItem value="Suspended">Suspended</MenuItem><MenuItem value="Pending">Pending</MenuItem></TextField></Grid>
-                  <Grid size={{ xs: 12, sm: 6 }}><TextField fullWidth label="Phone" value={form.phone} onChange={update('phone')} InputProps={{ startAdornment: <InputAdornment position="start"><PhoneOutlinedIcon fontSize="small" /></InputAdornment> }} /></Grid>
-                  <Grid size={{ xs: 12, sm: 6 }}><TextField fullWidth label="Email" value={form.email} onChange={update('email')} InputProps={{ startAdornment: <InputAdornment position="start"><EmailOutlinedIcon fontSize="small" /></InputAdornment> }} /></Grid>
-                  <Grid size={{ xs: 12 }}><TextField fullWidth label="Address" multiline minRows={2} value={form.address} onChange={update('address')} InputProps={{ startAdornment: <InputAdornment position="start"><LocationOnOutlinedIcon fontSize="small" /></InputAdornment> }} /></Grid>
+                  <Grid size={{ xs: 12, sm: 6 }}><TextField fullWidth label="Phone" value={form.phone} onChange={update('phone')} slotProps={{ input: { startAdornment: <InputAdornment position="start"><PhoneOutlinedIcon fontSize="small" /></InputAdornment> } }} /></Grid>
+                  <Grid size={{ xs: 12, sm: 6 }}><TextField fullWidth label="Email" value={form.email} onChange={update('email')} slotProps={{ input: { startAdornment: <InputAdornment position="start"><EmailOutlinedIcon fontSize="small" /></InputAdornment> } }} /></Grid>
+                  <Grid size={{ xs: 12 }}><TextField fullWidth label="Address" multiline minRows={2} value={form.address} onChange={update('address')} slotProps={{ input: { startAdornment: <InputAdornment position="start"><LocationOnOutlinedIcon fontSize="small" /></InputAdornment> } }} /></Grid>
                   <Grid size={{ xs: 12, sm: 6 }}><TextField fullWidth label="City" value={form.city} onChange={update('city')} /></Grid>
                   <Grid size={{ xs: 12, sm: 3 }}><TextField fullWidth label="Currency" value={form.currencySymbol} onChange={update('currencySymbol')} /></Grid>
-                  <Grid size={{ xs: 12, sm: 3 }}><TextField fullWidth label="Tax %" type="number" value={form.taxRatePercent} onChange={update('taxRatePercent')} inputProps={{ min: 0, max: 100, step: 0.1 }} /></Grid>
+                  <Grid size={{ xs: 12, sm: 3 }}><TextField fullWidth label="Tax %" type="number" value={form.taxRatePercent} onChange={update('taxRatePercent')} slotProps={{ htmlInput: { min: 0, max: 100, step: 0.1 } }} /></Grid>
                 </Grid>
                 <Divider sx={{ my: 3 }} />
                 <Typography variant="h6" sx={{ fontWeight: 900, mb: 2 }}>Subscription</Typography>
                 <Grid container spacing={2}>
                   <Grid size={{ xs: 12, sm: 6 }}><TextField select fullWidth label="Plan" value={form.subscriptionPlan} onChange={update('subscriptionPlan')}><MenuItem value="Trial">Trial</MenuItem><MenuItem value="Basic">Basic</MenuItem><MenuItem value="Pro">Pro</MenuItem><MenuItem value="Premium">Premium</MenuItem><MenuItem value="Custom">Custom</MenuItem></TextField></Grid>
                   <Grid size={{ xs: 12, sm: 6 }}><TextField select fullWidth label="Subscription Status" value={form.subscriptionStatus} onChange={update('subscriptionStatus')}><MenuItem value="Trial">Trial</MenuItem><MenuItem value="Active">Active</MenuItem><MenuItem value="Expired">Expired</MenuItem><MenuItem value="Cancelled">Cancelled</MenuItem></TextField></Grid>
-                  <Grid size={{ xs: 12, sm: 4 }}><TextField fullWidth type="date" label="Start Date" value={form.subscriptionStartDate} onChange={update('subscriptionStartDate')} InputLabelProps={{ shrink: true }} /></Grid>
-                  <Grid size={{ xs: 12, sm: 4 }}><TextField fullWidth type="date" label="Expiry Date" value={form.subscriptionExpiryDate} onChange={update('subscriptionExpiryDate')} InputLabelProps={{ shrink: true }} /></Grid>
-                  <Grid size={{ xs: 12, sm: 4 }}><TextField fullWidth type="number" label="Amount" value={form.subscriptionAmount} onChange={update('subscriptionAmount')} inputProps={{ min: 0, step: 0.01 }} /></Grid>
-                  <Grid size={{ xs: 12 }}><TextField fullWidth type="date" label="Next Renewal Date" value={form.nextRenewalDate} onChange={update('nextRenewalDate')} InputLabelProps={{ shrink: true }} /></Grid>
+                  <Grid size={{ xs: 12, sm: 4 }}><TextField fullWidth type="date" label="Start Date" value={form.subscriptionStartDate} onChange={update('subscriptionStartDate')} slotProps={{ inputLabel: { shrink: true } }} /></Grid>
+                  <Grid size={{ xs: 12, sm: 4 }}><TextField fullWidth type="date" label="Expiry Date" value={form.subscriptionExpiryDate} onChange={update('subscriptionExpiryDate')} slotProps={{ inputLabel: { shrink: true } }} /></Grid>
+                  <Grid size={{ xs: 12, sm: 4 }}><TextField fullWidth type="number" label="Amount" value={form.subscriptionAmount} onChange={update('subscriptionAmount')} slotProps={{ htmlInput: { min: 0, step: 0.01 } }} /></Grid>
+                  <Grid size={{ xs: 12 }}><TextField fullWidth type="date" label="Next Renewal Date" value={form.nextRenewalDate} onChange={update('nextRenewalDate')} slotProps={{ inputLabel: { shrink: true } }} /></Grid>
                 </Grid>
                 <Box sx={{ mt: 3, display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
                   <Button variant="contained" onClick={save} disabled={saving} startIcon={saving ? <CircularProgress size={18} sx={{ color: '#fff' }} /> : <CheckCircleIcon />} sx={{ bgcolor: '#6A3F4D', '&:hover': { bgcolor: '#5A3541' }, borderRadius: '12px', textTransform: 'none', fontWeight: 900, px: 3 }}>
