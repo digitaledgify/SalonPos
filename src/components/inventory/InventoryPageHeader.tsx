@@ -8,11 +8,13 @@ import HistoryIcon from '@mui/icons-material/History';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import { useInventory } from './InventoryContext';
 import { useDashboard } from '../../context/DashboardContext';
+import { canEditInventory } from '../../constants/permissions';
 
 export const InventoryPageHeader: React.FC = () => {
   const { openAddModal, openRestockModal, openAdjustmentModal, openHistoryDrawer, exportToCSV } =
     useInventory();
   const { role } = useDashboard();
+  const canEdit = canEditInventory(role);
 
   return (
     <Box
@@ -120,65 +122,71 @@ export const InventoryPageHeader: React.FC = () => {
           Export CSV
         </Button>
 
-        <Button
-          variant="outlined"
-          startIcon={<RemoveCircleIcon />}
-          onClick={() => openAdjustmentModal()}
-          sx={{
-            color: '#C53030',
-            borderColor: '#FED7D7',
-            bgcolor: '#FFF5F5',
-            fontWeight: 700,
-            borderRadius: '10px',
-            textTransform: 'none',
-            '&:hover': {
-              borderColor: '#E53E3E',
-              bgcolor: '#FED7D7',
-            },
-          }}
-        >
-          Log Usage / Waste
-        </Button>
+        {canEdit && (
+          <Button
+            variant="outlined"
+            startIcon={<RemoveCircleIcon />}
+            onClick={() => openAdjustmentModal()}
+            sx={{
+              color: '#C53030',
+              borderColor: '#FED7D7',
+              bgcolor: '#FFF5F5',
+              fontWeight: 700,
+              borderRadius: '10px',
+              textTransform: 'none',
+              '&:hover': {
+                borderColor: '#E53E3E',
+                bgcolor: '#FED7D7',
+              },
+            }}
+          >
+            Log Usage / Waste
+          </Button>
+        )}
 
-        <Button
-          variant="contained"
-          startIcon={<AddShoppingCartIcon />}
-          onClick={() => openRestockModal()}
-          sx={{
-            bgcolor: '#A8828F',
-            color: '#FFFFFF',
-            fontWeight: 700,
-            borderRadius: '10px',
-            textTransform: 'none',
-            boxShadow: 'none',
-            '&:hover': {
-              bgcolor: '#B29369',
+        {canEdit && (
+          <Button
+            variant="contained"
+            startIcon={<AddShoppingCartIcon />}
+            onClick={() => openRestockModal()}
+            sx={{
+              bgcolor: '#A8828F',
+              color: '#FFFFFF',
+              fontWeight: 700,
+              borderRadius: '10px',
+              textTransform: 'none',
               boxShadow: 'none',
-            },
-          }}
-        >
-          Restock Shipment
-        </Button>
+              '&:hover': {
+                bgcolor: '#B29369',
+                boxShadow: 'none',
+              },
+            }}
+          >
+            Restock Shipment
+          </Button>
+        )}
 
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={openAddModal}
-          sx={{
-            bgcolor: '#6A3F4D',
-            color: '#F8F4EE',
-            fontWeight: 700,
-            borderRadius: '10px',
-            textTransform: 'none',
-            boxShadow: '0 4px 12px rgba(107, 79, 58, 0.25)',
-            '&:hover': {
-              bgcolor: '#543D2D',
-              boxShadow: '0 6px 16px rgba(107, 79, 58, 0.35)',
-            },
-          }}
-        >
-          Add Product
-        </Button>
+        {canEdit && (
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={openAddModal}
+            sx={{
+              bgcolor: '#6A3F4D',
+              color: '#F8F4EE',
+              fontWeight: 700,
+              borderRadius: '10px',
+              textTransform: 'none',
+              boxShadow: '0 4px 12px rgba(107, 79, 58, 0.25)',
+              '&:hover': {
+                bgcolor: '#543D2D',
+                boxShadow: '0 6px 16px rgba(107, 79, 58, 0.35)',
+              },
+            }}
+          >
+            Add Product
+          </Button>
+        )}
       </Box>
     </Box>
   );

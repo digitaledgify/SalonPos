@@ -12,9 +12,19 @@ import { EmployeeDetailDrawer } from './EmployeeDetailDrawer';
 import { AddEditEmployeeModal } from './AddEditEmployeeModal';
 import { AssignShiftModal } from './AssignShiftModal';
 import { AdjustCommissionModal } from './AdjustCommissionModal';
+import { MyCommissionView } from './MyCommissionView';
+import { useDashboard } from '../../context/DashboardContext';
 
 const EmployeesContent: React.FC = () => {
   const { activeTab, loadingEmployees } = useEmployees();
+  const { role } = useDashboard();
+
+  // Stylists get a stripped-down, read-only view of their own commission
+  // and earnings only — never the full staff directory, payroll, or other
+  // staff members' data.
+  if (role === 'Stylist') {
+    return <MyCommissionView />;
+  }
 
   if (loadingEmployees) {
     return (

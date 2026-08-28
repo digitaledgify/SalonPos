@@ -18,7 +18,7 @@ import { NewBillModal } from './NewBillModal';
 import { NewCustomerModal } from './NewCustomerModal';
 import { AddExpenseModal } from './AddExpenseModal';
 import { InvoiceDetailModal } from './InvoiceDetailModal';
-import { NewOutletModal } from './NewOutletModal';
+import { canViewFinancials, canAccessNavItem } from '../constants/permissions';
 import { formatCurrency } from '../utils/formatters';
 
 export const Dashboard: React.FC = () => {
@@ -97,10 +97,12 @@ export const Dashboard: React.FC = () => {
     },
   ];
 
-  // Role based filtering of KPI cards
+  // Role based filtering of KPI cards.
+  // Only Admin sees salon-wide financial figures (sales revenue). Reception
+  // sees operational counts (appointments, stock) but not revenue. Stylists
+  // see only their own schedule-related counts.
   const visibleKPIs = kpis.filter((kpi) => {
-    if (role === 'Admin') return true;
-    if (role === 'Reception') return kpi.type !== 'sales' || true;
+    if (kpi.type === 'sales') return canViewFinancials(role);
     if (role === 'Stylist') return kpi.type === 'appointments' || kpi.type === 'completed' || kpi.type === 'pending';
     return true;
   });
@@ -166,8 +168,8 @@ export const Dashboard: React.FC = () => {
           <QuickActions />
         </Box>
 
-        {/* Row 3: Sales Chart & Payment Breakdown (Visible for Admin and Reception) */}
-        {(role === 'Admin' || role === 'Reception') && (
+        {/* Row 3: Sales Chart & Payment Breakdown — financial data, Admin only */}
+        {canViewFinancials(role) && (
           <Box
             sx={{
               display: 'grid',
@@ -181,36 +183,40 @@ export const Dashboard: React.FC = () => {
           </Box>
         )}
 
-        {/* Row 4: Today's Appointments & Low Stock Alert */}
+        {/* Row 4: Today's Appointments & Low Stock Alert (stock view requires Inventory access) */}
         <Box
           sx={{
             display: 'grid',
-            gridTemplateColumns: { xs: '1fr', lg: '7fr 5fr' },
+            gridTemplateColumns: { xs: '1fr', lg: canAccessNavItem(role, 'Inventory') ? '7fr 5fr' : '1fr' },
             gap: 2.5,
             mb: 3,
           }}
         >
           <AppointmentCard />
-          <LowStockCard />
+          {canAccessNavItem(role, 'Inventory') && <LowStockCard />}
         </Box>
 
-        {/* Row 5: Top Requested Services & Top Stylists Leaderboard */}
-        <Box
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
-            gap: 2.5,
-            mb: 3,
-          }}
-        >
-          <TopServicesChart />
-          <TopStylists />
-        </Box>
+        {/* Row 5: Top Requested Services & Top Stylists Leaderboard — revenue data, Admin only */}
+        {canViewFinancials(role) && (
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+              gap: 2.5,
+              mb: 3,
+            }}
+          >
+            <TopServicesChart />
+            <TopStylists />
+          </Box>
+        )}
 
-        {/* Row 6: Recent Transactions Table */}
-        <Box sx={{ mb: 3 }}>
-          <RecentTransactions />
-        </Box>
+        {/* Row 6: Recent Transactions Table — billing data, not shown to Stylists */}
+        {canAccessNavItem(role, 'Billing') && (
+          <Box sx={{ mb: 3 }}>
+            <RecentTransactions />
+          </Box>
+        )}
 
         {/* Row 7: Customer Birthdays & System Notifications */}
         <Box
@@ -231,7 +237,6 @@ export const Dashboard: React.FC = () => {
       <NewCustomerModal />
       <AddExpenseModal />
       <InvoiceDetailModal />
-      <NewOutletModal />
 
       {/* Global Toast Notification Snackbar */}
       <Snackbar

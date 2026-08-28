@@ -25,6 +25,7 @@ import StoreIcon from '@mui/icons-material/Store';
 import { InventoryItem } from '../../types';
 import { useInventory } from './InventoryContext';
 import { useDashboard } from '../../context/DashboardContext';
+import { canEditInventory } from '../../constants/permissions';
 
 interface InventoryGridCardProps {
   item: InventoryItem;
@@ -32,7 +33,8 @@ interface InventoryGridCardProps {
 
 export const InventoryGridCard: React.FC<InventoryGridCardProps> = ({ item }) => {
   const { openEditModal, openRestockModal, openAdjustmentModal, openHistoryDrawer } = useInventory();
-  const { deleteInventoryItem } = useDashboard();
+  const { deleteInventoryItem, role } = useDashboard();
+  const canEdit = canEditInventory(role);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -194,52 +196,54 @@ export const InventoryGridCard: React.FC<InventoryGridCardProps> = ({ item }) =>
       <Divider sx={{ borderColor: '#F0E8DC' }} />
 
       {/* Card Footer Actions */}
-      <Box sx={{ p: 1.5, px: 2, bgcolor: '#F8F4EE', display: 'flex', gap: 1 }}>
-        <Button
-          fullWidth
-          size="small"
-          variant="contained"
-          startIcon={<AddShoppingCartIcon />}
-          onClick={() => openRestockModal(item)}
-          sx={{
-            bgcolor: '#6A3F4D',
-            color: '#F8F4EE',
-            fontWeight: 700,
-            borderRadius: '8px',
-            textTransform: 'none',
-            fontSize: '0.8rem',
-            boxShadow: 'none',
-            '&:hover': {
-              bgcolor: '#543D2D',
+      {canEdit && (
+        <Box sx={{ p: 1.5, px: 2, bgcolor: '#F8F4EE', display: 'flex', gap: 1 }}>
+          <Button
+            fullWidth
+            size="small"
+            variant="contained"
+            startIcon={<AddShoppingCartIcon />}
+            onClick={() => openRestockModal(item)}
+            sx={{
+              bgcolor: '#6A3F4D',
+              color: '#F8F4EE',
+              fontWeight: 700,
+              borderRadius: '8px',
+              textTransform: 'none',
+              fontSize: '0.8rem',
               boxShadow: 'none',
-            },
-          }}
-        >
-          Restock
-        </Button>
+              '&:hover': {
+                bgcolor: '#543D2D',
+                boxShadow: 'none',
+              },
+            }}
+          >
+            Restock
+          </Button>
 
-        <Button
-          size="small"
-          variant="outlined"
-          startIcon={<RemoveCircleIcon />}
-          onClick={() => openAdjustmentModal(item)}
-          sx={{
-            color: '#C53030',
-            borderColor: '#FED7D7',
-            bgcolor: '#FFF5F5',
-            fontWeight: 700,
-            borderRadius: '8px',
-            textTransform: 'none',
-            fontSize: '0.8rem',
-            '&:hover': {
-              borderColor: '#E53E3E',
-              bgcolor: '#FED7D7',
-            },
-          }}
-        >
-          Use
-        </Button>
-      </Box>
+          <Button
+            size="small"
+            variant="outlined"
+            startIcon={<RemoveCircleIcon />}
+            onClick={() => openAdjustmentModal(item)}
+            sx={{
+              color: '#C53030',
+              borderColor: '#FED7D7',
+              bgcolor: '#FFF5F5',
+              fontWeight: 700,
+              borderRadius: '8px',
+              textTransform: 'none',
+              fontSize: '0.8rem',
+              '&:hover': {
+                borderColor: '#E53E3E',
+                bgcolor: '#FED7D7',
+              },
+            }}
+          >
+            Use
+          </Button>
+        </Box>
+      )}
 
       {/* Options Menu */}
       <Menu
@@ -265,30 +269,34 @@ export const InventoryGridCard: React.FC<InventoryGridCardProps> = ({ item }) =>
           <ListItemText primary="Logs" slotProps={{ primary: { sx: { fontWeight: 700, fontSize: '0.85rem' } } }} />
         </MenuItem>
 
-        <MenuItem
-          onClick={() => {
-            openEditModal(item);
-            setAnchorEl(null);
-          }}
-        >
-          <ListItemIcon sx={{ color: '#2D1F24' }}>
-            <EditIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText primary="Edit Details" slotProps={{ primary: { sx: { fontWeight: 700, fontSize: '0.85rem' } } }} />
-        </MenuItem>
+        {canEdit && (
+          <MenuItem
+            onClick={() => {
+              openEditModal(item);
+              setAnchorEl(null);
+            }}
+          >
+            <ListItemIcon sx={{ color: '#2D1F24' }}>
+              <EditIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText primary="Edit Details" slotProps={{ primary: { sx: { fontWeight: 700, fontSize: '0.85rem' } } }} />
+          </MenuItem>
+        )}
 
-        <MenuItem
-          onClick={() => {
-            deleteInventoryItem(item.id);
-            setAnchorEl(null);
-          }}
-          sx={{ color: '#D32F2F' }}
-        >
-          <ListItemIcon sx={{ color: '#D32F2F' }}>
-            <DeleteIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText primary="Delete" slotProps={{ primary: { sx: { fontWeight: 700, fontSize: '0.85rem' } } }} />
-        </MenuItem>
+        {canEdit && (
+          <MenuItem
+            onClick={() => {
+              deleteInventoryItem(item.id);
+              setAnchorEl(null);
+            }}
+            sx={{ color: '#D32F2F' }}
+          >
+            <ListItemIcon sx={{ color: '#D32F2F' }}>
+              <DeleteIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText primary="Delete" slotProps={{ primary: { sx: { fontWeight: 700, fontSize: '0.85rem' } } }} />
+          </MenuItem>
+        )}
       </Menu>
     </Card>
   );
