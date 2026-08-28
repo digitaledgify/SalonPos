@@ -26,6 +26,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import StarIcon from '@mui/icons-material/Star';
 import { SalonService } from '../../types/service';
 import { useServices } from '../../context/ServiceContext';
+import { useDashboard } from '../../context/DashboardContext';
+import { canEditServices } from '../../constants/permissions';
 
 export const ServiceTable: React.FC = () => {
   const {
@@ -37,6 +39,8 @@ export const ServiceTable: React.FC = () => {
     toggleServiceStatus,
     setServiceForBooking,
   } = useServices();
+  const { role } = useDashboard();
+  const canEdit = canEditServices(role);
 
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
@@ -194,6 +198,7 @@ export const ServiceTable: React.FC = () => {
                           size="small"
                           checked={srv.status === 'Active'}
                           onChange={() => toggleServiceStatus(srv.id)}
+                          disabled={!canEdit}
                         />
                         <Typography
                           variant="caption"
@@ -268,30 +273,34 @@ export const ServiceTable: React.FC = () => {
           <VisibilityIcon sx={{ fontSize: 18, mr: 1, color: '#6A3F4D' }} />
           View Details
         </MenuItem>
-        <MenuItem
-          onClick={() => {
-            if (activeService) {
-              setServiceToEdit(activeService);
-              setIsServiceFormOpen(true);
-            }
-            handleCloseMenu();
-          }}
-        >
-          <EditIcon sx={{ fontSize: 18, mr: 1, color: '#1565C0' }} />
-          Edit Service
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            if (activeService && window.confirm(`Delete "${activeService.name}"?`)) {
-              deleteService(activeService.id);
-            }
-            handleCloseMenu();
-          }}
-          sx={{ color: '#D32F2F' }}
-        >
-          <DeleteIcon sx={{ fontSize: 18, mr: 1 }} />
-          Delete Service
-        </MenuItem>
+        {canEdit && (
+          <MenuItem
+            onClick={() => {
+              if (activeService) {
+                setServiceToEdit(activeService);
+                setIsServiceFormOpen(true);
+              }
+              handleCloseMenu();
+            }}
+          >
+            <EditIcon sx={{ fontSize: 18, mr: 1, color: '#1565C0' }} />
+            Edit Service
+          </MenuItem>
+        )}
+        {canEdit && (
+          <MenuItem
+            onClick={() => {
+              if (activeService && window.confirm(`Delete "${activeService.name}"?`)) {
+                deleteService(activeService.id);
+              }
+              handleCloseMenu();
+            }}
+            sx={{ color: '#D32F2F' }}
+          >
+            <DeleteIcon sx={{ fontSize: 18, mr: 1 }} />
+            Delete Service
+          </MenuItem>
+        )}
       </Menu>
     </Paper>
   );

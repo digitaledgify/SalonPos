@@ -5,10 +5,12 @@ import CategoryIcon from '@mui/icons-material/Category';
 import ContentCutIcon from '@mui/icons-material/ContentCut';
 import { useServices } from '../../context/ServiceContext';
 import { useDashboard } from '../../context/DashboardContext';
+import { canEditServices } from '../../constants/permissions';
 
 export const ServicePageHeader: React.FC = () => {
   const { setIsServiceFormOpen, setServiceToEdit, setIsCategoryModalOpen } = useServices();
   const { role } = useDashboard();
+  const canEdit = canEditServices(role);
 
   const handleOpenAdd = () => {
     setServiceToEdit(null);
@@ -96,26 +98,28 @@ export const ServicePageHeader: React.FC = () => {
           Categories Summary
         </Button>
 
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={handleOpenAdd}
-          sx={{
-            bgcolor: '#6A3F4D',
-            color: '#EBD9DF',
-            borderRadius: '10px',
-            textTransform: 'none',
-            fontWeight: 800,
-            px: 2.5,
-            py: 1,
-            boxShadow: '0 4px 12px rgba(107, 79, 58, 0.25)',
-            '&:hover': {
-              bgcolor: '#523B2A',
-            },
-          }}
-        >
-          Add New Service
-        </Button>
+        {canEdit && (
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={handleOpenAdd}
+            sx={{
+              bgcolor: '#6A3F4D',
+              color: '#EBD9DF',
+              borderRadius: '10px',
+              textTransform: 'none',
+              fontWeight: 800,
+              px: 2.5,
+              py: 1,
+              boxShadow: '0 4px 12px rgba(107, 79, 58, 0.25)',
+              '&:hover': {
+                bgcolor: '#523B2A',
+              },
+            }}
+          >
+            Add New Service
+          </Button>
+        )}
       </Box>
     </Box>
   );
