@@ -12,7 +12,7 @@ import { NewAppointmentModal } from '../NewAppointmentModal';
 import { Appointment } from '../../types';
 
 export const AppointmentsModule: React.FC = () => {
-  const { appointments, loadingAppointments } = useDashboard();
+  const { appointments, loadingAppointments, role, currentUser } = useDashboard();
 
   // Local View States
   const [selectedDate, setSelectedDate] = useState('Today');
@@ -36,6 +36,14 @@ export const AppointmentsModule: React.FC = () => {
 
   // Filter Logic
   const filteredAppointments = appointments.filter((apt) => {
+    // 0. Stylists only ever see their own schedule — enforced here
+    // regardless of any UI filter state, not just as a default.
+    if (role === 'Stylist') {
+      if ((apt.stylistName || '').trim().toLowerCase() !== (currentUser?.name || '').trim().toLowerCase()) {
+        return false;
+      }
+    }
+
     // 1. Search Query Filter (Name, Phone, Service)
     if (search.trim()) {
       const q = search.toLowerCase();

@@ -18,29 +18,35 @@ import { ReportsModule } from './components/reports/ReportsModule';
 import { SettingsModule } from './components/settings/SettingsModule';
 import { AuthScreen } from './components/auth/AuthScreen';
 import { SuperAdminDashboard } from './components/auth/SuperAdminDashboard';
+import { canAccessNavItem } from './constants/permissions';
 
 function MainAppContent() {
-  const { activeNavItem, toastMessage, hideToast } = useDashboard();
+  const { activeNavItem, toastMessage, hideToast, role } = useDashboard();
+
+  // Defense in depth: even if activeNavItem somehow points at a module the
+  // signed-in role can't access (e.g. stale state), fall back to Dashboard
+  // instead of rendering it.
+  const safeNavItem = canAccessNavItem(role, activeNavItem) ? activeNavItem : 'Dashboard';
 
   let content = <Dashboard />;
 
-  if (activeNavItem === 'Expenses') {
+  if (safeNavItem === 'Expenses') {
     content = <ExpensesModule />;
-  } else if (activeNavItem === 'Reports') {
+  } else if (safeNavItem === 'Reports') {
     content = <ReportsModule />;
-  } else if (activeNavItem === 'Settings') {
+  } else if (safeNavItem === 'Settings') {
     content = <SettingsModule />;
-  } else if (activeNavItem === 'Employees') {
+  } else if (safeNavItem === 'Employees') {
     content = <EmployeesModule />;
-  } else if (activeNavItem === 'Inventory') {
+  } else if (safeNavItem === 'Inventory') {
     content = <InventoryModule />;
-  } else if (activeNavItem === 'Billing') {
+  } else if (safeNavItem === 'Billing') {
     content = <BillingModule />;
-  } else if (activeNavItem === 'Appointments') {
+  } else if (safeNavItem === 'Appointments') {
     content = <AppointmentsModule />;
-  } else if (activeNavItem === 'Services') {
+  } else if (safeNavItem === 'Services') {
     content = <ServicesModule />;
-  } else if (activeNavItem === 'Customers') {
+  } else if (safeNavItem === 'Customers') {
     content = <CustomersModule />;
   }
 

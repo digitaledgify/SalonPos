@@ -32,25 +32,16 @@ import { useAuth } from './AuthContext';
 import { supabase } from '../lib/supabaseClient';
 
 interface DashboardContextType {
-  // Multi-Tenant / Multi-Salon Outlets
+  // Salon Outlet (one salon per login)
   outlets: SalonOutlet[];
   activeOutlet: SalonOutlet;
-  switchOutlet: (outletId: string) => void;
-  addOutlet: (outlet: Omit<SalonOutlet, 'id' | 'status'>) => void;
-  isNewOutletModalOpen: boolean;
-  setIsNewOutletModalOpen: (open: boolean) => void;
 
-  // Auth State & Actions
+  // Auth State & Actions — driven entirely by the real Supabase session.
   currentUser: UserAccount;
   isAuthenticated: boolean;
-  isLoginModalOpen: boolean;
-  setIsLoginModalOpen: (open: boolean) => void;
-  loginWithPin: (role: UserRole, pin: string) => boolean;
-  directLogin: (user: UserAccount) => void;
   logout: () => void;
 
   role: UserRole;
-  setRole: (role: UserRole) => void;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   
@@ -139,7 +130,6 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const [outlets, setOutlets] = useState<SalonOutlet[]>([derivedOutlet]);
   const [activeOutletId, setActiveOutletId] = useState<string>(derivedOutlet.id);
-  const [isNewOutletModalOpen, setIsNewOutletModalOpen] = useState(false);
 
   // Keep the outlet list in sync once the real salon loads in from Supabase
   React.useEffect(() => {
@@ -152,29 +142,9 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const activeOutlet = outlets.find((o) => o.id === activeOutletId) || outlets[0];
 
-  const switchOutlet = (outletId: string) => {
-    setActiveOutletId(outletId);
-    const target = outlets.find((o) => o.id === outletId);
-    if (target) {
-      showToast(`Switched active POS outlet to "${target.name}" (${target.code})`);
-    }
-  };
-
-  const addOutlet = (newOutletData: Omit<SalonOutlet, 'id' | 'status'>) => {
-    const newOutlet: SalonOutlet = {
-      ...newOutletData,
-      id: `outlet-${Date.now()}`,
-      status: 'Subscription Active',
-      totalDailyRevenue: 0,
-    };
-    setOutlets((prev) => [...prev, newOutlet]);
-    setActiveOutletId(newOutlet.id);
-    showToast(`Registered new Salon Tenant "${newOutlet.name}"!`);
-  };
-
-  // currentUser is now driven by the real logged-in Supabase profile.
-  // DEMO_USERS is only used as a shape/permissions fallback while the
-  // profile is still loading, and for the "quick switch role" demo helper.
+  // currentUser and role are driven entirely by the real logged-in Supabase
+  // profile. DEMO_USERS is only used as a shape/permissions fallback while
+  // the profile is still loading.
   const derivedUser: UserAccount = profile
     ? {
         id: profile.id,
@@ -200,8 +170,7 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile?.id, profile?.role]);
 
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
+  const [isAuthenticated] = useState<boolean>(true);
 
   const [role, setRoleState] = useState<UserRole>('Admin');
   const [searchQuery, setSearchQuery] = useState('');
@@ -316,7 +285,7 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   // Mobile Sidebar
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-  const [activeNavItem, setActiveNavItem] = useState('Customers');
+  const [activeNavItem, setActiveNavItem] = useState('Dashboard');
 
   // Toast State
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -329,39 +298,9 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     setToastMessage(null);
   };
 
-  const loginWithPin = (targetRole: UserRole, enteredPin: string): boolean => {
-    const matchUser = DEMO_USERS.find((u) => u.role === targetRole);
-    if (matchUser && matchUser.pin === enteredPin) {
-      setCurrentUser(matchUser);
-      setRoleState(matchUser.role);
-      setIsAuthenticated(true);
-      setIsLoginModalOpen(false);
-      showToast(`Welcome back, ${matchUser.name}! Logged in as ${matchUser.role}.`);
-      return true;
-    }
-    return false;
-  };
-
-  const directLogin = (user: UserAccount) => {
-    setCurrentUser(user);
-    setRoleState(user.role);
-    setIsAuthenticated(true);
-    setIsLoginModalOpen(false);
-    showToast(`Logged in as ${user.name} (${user.role})`);
-  };
-
   const logout = () => {
     authSignOut();
     showToast('Signed out successfully.');
-  };
-
-  const setRole = (newRole: UserRole) => {
-    setRoleState(newRole);
-    const matchingUser = DEMO_USERS.find((u) => u.role === newRole);
-    if (matchingUser) {
-      setCurrentUser(matchingUser);
-    }
-    showToast(`Role switched to ${newRole}. View widgets updated.`);
   };
 
   // Status Handlers
@@ -560,19 +499,10 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       value={{
         outlets,
         activeOutlet,
-        switchOutlet,
-        addOutlet,
-        isNewOutletModalOpen,
-        setIsNewOutletModalOpen,
         currentUser,
         isAuthenticated,
-        isLoginModalOpen,
-        setIsLoginModalOpen,
-        loginWithPin,
-        directLogin,
         logout,
         role,
-        setRole,
         searchQuery,
         setSearchQuery,
         transactions,

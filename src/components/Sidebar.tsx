@@ -9,16 +9,10 @@ import {
   ListItemText,
   Typography,
   Divider,
-  FormControl,
-  Select,
-  MenuItem,
   Chip,
-  SelectChangeEvent,
   Paper,
   useTheme,
   useMediaQuery,
-  Button,
-  Tooltip,
 } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
@@ -30,13 +24,11 @@ import BadgeIcon from '@mui/icons-material/Badge';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import SettingsIcon from '@mui/icons-material/Settings';
-import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 import StorefrontIcon from '@mui/icons-material/Storefront';
-import AddBusinessIcon from '@mui/icons-material/AddBusiness';
-import KeyIcon from '@mui/icons-material/Key';
+import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import { useDashboard } from '../context/DashboardContext';
-import { UserRole } from '../types';
+import { canAccessNavItem } from '../constants/permissions';
 
 const NAV_ITEMS = [
   { text: 'Dashboard', icon: <DashboardIcon /> },
@@ -56,27 +48,16 @@ export const Sidebar: React.FC = () => {
   const isTabletOrMobile = useMediaQuery(theme.breakpoints.down('md'));
   const {
     role,
-    setRole,
     currentUser,
-    setIsLoginModalOpen,
     isMobileSidebarOpen,
     setIsMobileSidebarOpen,
     activeNavItem,
     setActiveNavItem,
     showToast,
-    outlets,
     activeOutlet,
-    switchOutlet,
-    setIsNewOutletModalOpen,
   } = useDashboard();
 
-  const handleRoleChange = (event: SelectChangeEvent) => {
-    setRole(event.target.value as UserRole);
-  };
-
-  const handleOutletChange = (event: SelectChangeEvent) => {
-    switchOutlet(event.target.value as string);
-  };
+  const visibleNavItems = NAV_ITEMS.filter((item) => canAccessNavItem(role, item.text));
 
   const handleNavClick = (itemText: string) => {
     setActiveNavItem(itemText);
@@ -131,24 +112,10 @@ export const Sidebar: React.FC = () => {
             >
               Salon POS
             </Typography>
-            <Typography
-              variant="caption"
-              sx={{
-                fontFamily: '"Inter", sans-serif',
-                fontSize: '0.62rem',
-                fontWeight: 700,
-                letterSpacing: '0.14em',
-                color: '#6A3F4D',
-                textTransform: 'uppercase',
-                display: 'block',
-              }}
-            >
-              Multi-Salon Platform
-            </Typography>
           </Box>
         </Box>
 
-        {/* Multi-Tenant Salon Outlet Switcher Card */}
+        {/* Active Salon Info (static — a login belongs to exactly one salon) */}
         <Paper
           elevation={0}
           sx={{
@@ -159,11 +126,11 @@ export const Sidebar: React.FC = () => {
             boxShadow: '0 2px 6px rgba(0,0,0,0.03)',
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.8 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.5 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8 }}>
               <StorefrontIcon sx={{ fontSize: 16, color: '#6A3F4D' }} />
               <Typography variant="caption" sx={{ fontWeight: 800, color: '#2D1F24', fontSize: '0.68rem', textTransform: 'uppercase' }}>
-                Active Salon Outlet
+                Your Salon
               </Typography>
             </Box>
             <Chip
@@ -172,63 +139,23 @@ export const Sidebar: React.FC = () => {
               sx={{ height: 18, fontSize: '0.65rem', fontWeight: 800, bgcolor: '#EBD9DF', color: '#6A3F4D' }}
             />
           </Box>
-
-          <FormControl fullWidth size="small">
-            <Select
-              value={activeOutlet.id}
-              onChange={handleOutletChange}
-              displayEmpty
-              sx={{
-                borderRadius: '8px',
-                fontSize: '0.82rem',
-                fontWeight: 700,
-                color: '#2D1F24',
-                bgcolor: '#F8F4EE',
-                '& .MuiSelect-select': { py: 0.8 },
-              }}
-            >
-              {outlets.map((outlet) => (
-                <MenuItem key={outlet.id} value={outlet.id}>
-                  <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                    <Typography variant="body2" sx={{ fontWeight: 700, fontSize: '0.82rem', color: '#2D1F24', lineHeight: 1.2 }}>
-                      {outlet.name}
-                    </Typography>
-                    <Typography variant="caption" sx={{ color: '#6E5C63', fontSize: '0.68rem' }}>
-                      {outlet.type} • {outlet.city}
-                    </Typography>
-                  </Box>
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          <Button
-            fullWidth
-            size="small"
-            variant="text"
-            onClick={() => setIsNewOutletModalOpen(true)}
-            startIcon={<AddBusinessIcon sx={{ fontSize: 15 }} />}
-            sx={{
-              mt: 0.8,
-              fontSize: '0.72rem',
-              fontWeight: 800,
-              color: '#6A3F4D',
-              textTransform: 'none',
-              py: 0.3,
-              '&:hover': { bgcolor: 'rgba(106, 63, 77, 0.08)' },
-            }}
-          >
-            + Sell / Add New Salon Client
-          </Button>
+          <Typography variant="body2" sx={{ fontWeight: 700, fontSize: '0.85rem', color: '#2D1F24', lineHeight: 1.3 }}>
+            {activeOutlet.name}
+          </Typography>
+          {activeOutlet.city && (
+            <Typography variant="caption" sx={{ color: '#6E5C63', fontSize: '0.72rem' }}>
+              {activeOutlet.city}
+            </Typography>
+          )}
         </Paper>
       </Box>
 
       <Divider sx={{ borderColor: 'rgba(106, 63, 77, 0.12)', mx: 2, mb: 1 }} />
 
-      {/* Navigation Links */}
+      {/* Navigation Links — filtered by the signed-in user's real role */}
       <Box sx={{ flexGrow: 1, overflowY: 'auto', px: 1.5, py: 0.5 }}>
         <List disablePadding>
-          {NAV_ITEMS.map((item) => {
+          {visibleNavItems.map((item) => {
             const isSelected = activeNavItem === item.text;
             return (
               <ListItem key={item.text} disablePadding sx={{ mb: 0.5 }}>
@@ -292,7 +219,7 @@ export const Sidebar: React.FC = () => {
         </List>
       </Box>
 
-      {/* Role Switcher & Staff Login Section at Bottom */}
+      {/* Signed-in Staff Info */}
       <Box sx={{ p: 2, borderTop: '1px solid rgba(106, 63, 77, 0.12)', bgcolor: 'rgba(255, 255, 255, 0.25)' }}>
         <Paper
           elevation={0}
@@ -303,73 +230,20 @@ export const Sidebar: React.FC = () => {
             borderRadius: '12px',
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <SupervisorAccountIcon sx={{ fontSize: 18, color: '#6A3F4D' }} />
-              <Typography variant="caption" sx={{ fontFamily: '"Inter", sans-serif', fontWeight: 700, color: '#6A3F4D', opacity: 0.8, textTransform: 'uppercase' }}>
-                Active Role
-              </Typography>
+              <Box>
+                <Typography variant="body2" sx={{ fontFamily: '"Inter", sans-serif', fontWeight: 700, color: '#2D1F24', lineHeight: 1.2 }}>
+                  {currentUser?.name || 'Signed in'}
+                </Typography>
+                <Typography variant="caption" sx={{ color: '#6E5C63', fontSize: '0.72rem' }}>
+                  {currentUser?.designation || role}
+                </Typography>
+              </Box>
             </Box>
             <Chip label={role} size="small" sx={{ height: 18, fontSize: '0.65rem', fontWeight: 800, bgcolor: '#EBD9DF', color: '#6A3F4D' }} />
           </Box>
-
-          <FormControl fullWidth size="small" sx={{ mb: 1.5 }}>
-            <Select
-              value={role}
-              onChange={handleRoleChange}
-              displayEmpty
-              sx={{
-                borderRadius: '8px',
-                fontSize: '0.85rem',
-                fontFamily: '"Inter", sans-serif',
-                fontWeight: 600,
-                color: '#6A3F4D',
-                bgcolor: '#F8F4EE',
-                '& .MuiSelect-select': {
-                  py: 1,
-                },
-              }}
-            >
-              <MenuItem value="Admin">
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Chip label="Admin" size="small" color="primary" sx={{ height: 18, fontSize: '0.65rem' }} />
-                </Box>
-              </MenuItem>
-              <MenuItem value="Reception">
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Chip label="Reception" size="small" color="secondary" sx={{ height: 18, fontSize: '0.65rem' }} />
-                </Box>
-              </MenuItem>
-              <MenuItem value="Stylist">
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Chip label="Stylist" size="small" sx={{ height: 18, fontSize: '0.65rem', bgcolor: '#EBD9DF', color: '#6A3F4D' }} />
-                </Box>
-              </MenuItem>
-            </Select>
-          </FormControl>
-
-          <Button
-            fullWidth
-            size="small"
-            variant="outlined"
-            onClick={() => setIsLoginModalOpen(true)}
-            startIcon={<KeyIcon sx={{ fontSize: 16 }} />}
-            sx={{
-              borderRadius: '8px',
-              fontSize: '0.75rem',
-              fontWeight: 700,
-              color: '#6A3F4D',
-              borderColor: '#6A3F4D',
-              textTransform: 'none',
-              py: 0.5,
-              '&:hover': {
-                bgcolor: 'rgba(106, 63, 77, 0.08)',
-                borderColor: '#6A3F4D',
-              },
-            }}
-          >
-            Staff Login Gateway
-          </Button>
         </Paper>
       </Box>
     </Box>
@@ -392,4 +266,3 @@ export const Sidebar: React.FC = () => {
 
   return sidebarContent;
 };
-

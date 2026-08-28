@@ -25,21 +25,14 @@ import MenuIcon from '@mui/icons-material/Menu';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import LogoutIcon from '@mui/icons-material/Logout';
-import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
-import KeyIcon from '@mui/icons-material/Key';
-import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
-import ContentCutIcon from '@mui/icons-material/ContentCut';
-import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import StorefrontIcon from '@mui/icons-material/Storefront';
-import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 import { useDashboard } from '../context/DashboardContext';
 import { getCurrentFormattedDate } from '../utils/formatters';
 
 export const Topbar: React.FC = () => {
   const theme = useTheme();
   const isTabletOrMobile = useMediaQuery(theme.breakpoints.down('md'));
-  
+
   const {
     role,
     currentUser,
@@ -47,9 +40,7 @@ export const Topbar: React.FC = () => {
     setSearchQuery,
     notifications,
     setIsMobileSidebarOpen,
-    setIsLoginModalOpen,
     logout,
-    setRole,
     showToast,
     activeOutlet,
   } = useDashboard();
@@ -75,19 +66,9 @@ export const Topbar: React.FC = () => {
     setProfileAnchorEl(null);
   };
 
-  const handleOpenLoginScreen = () => {
-    handleProfileClose();
-    setIsLoginModalOpen(true);
-  };
-
   const handleLogout = () => {
     handleProfileClose();
     logout();
-  };
-
-  const handleQuickSwitch = (newRole: 'Admin' | 'Reception' | 'Stylist') => {
-    handleProfileClose();
-    setRole(newRole);
   };
 
   const handleRefresh = () => {
@@ -206,11 +187,10 @@ export const Topbar: React.FC = () => {
             }}
           />
 
-          {/* Role Chip Indicator */}
+          {/* Role Chip Indicator (informational only — role comes from login) */}
           <Chip
             label={`Role: ${currentUser?.role || role}`}
             size="small"
-            onClick={handleOpenLoginScreen}
             sx={{
               display: { xs: 'none', md: 'inline-flex' },
               bgcolor: '#EBD9DF',
@@ -218,8 +198,6 @@ export const Topbar: React.FC = () => {
               fontWeight: 700,
               fontFamily: '"Inter", sans-serif',
               fontSize: '0.75rem',
-              cursor: 'pointer',
-              '&:hover': { bgcolor: '#D9C5CB' },
             }}
           />
 
@@ -258,7 +236,7 @@ export const Topbar: React.FC = () => {
                   color: '#2D1F24',
                 }}
               >
-                {currentUser?.name || 'Priya Roy'}
+                {currentUser?.name || 'User'}
               </Typography>
               <Typography
                 variant="caption"
@@ -268,7 +246,7 @@ export const Topbar: React.FC = () => {
                   fontSize: '0.72rem',
                 }}
               >
-                {currentUser?.designation || (role === 'Admin' ? 'Salon Manager' : role === 'Reception' ? 'Front Desk Lead' : 'Senior Stylist')}
+                {currentUser?.designation || role}
               </Typography>
             </Box>
           </Box>
@@ -319,38 +297,9 @@ export const Topbar: React.FC = () => {
 
           <Divider sx={{ my: 1 }} />
 
-          <Typography
-            variant="caption"
-            sx={{ px: 1, py: 0.5, color: '#6E5C63', fontWeight: 700, fontSize: '0.68rem', textTransform: 'uppercase', display: 'block' }}
-          >
-            Switch Active Access Role:
-          </Typography>
-
-          <MenuItem onClick={() => handleQuickSwitch('Admin')} selected={role === 'Admin'}>
-            <ListItemIcon><SupervisorAccountIcon sx={{ color: '#6A3F4D', fontSize: 18 }} /></ListItemIcon>
-            <ListItemText primary="Admin (Manager)" slotProps={{ primary: { sx: { fontSize: '0.85rem', fontWeight: 600 } } }} />
-          </MenuItem>
-
-          <MenuItem onClick={() => handleQuickSwitch('Reception')} selected={role === 'Reception'}>
-            <ListItemIcon><SupportAgentIcon sx={{ color: '#0288D1', fontSize: 18 }} /></ListItemIcon>
-            <ListItemText primary="Receptionist (POS)" slotProps={{ primary: { sx: { fontSize: '0.85rem', fontWeight: 600 } } }} />
-          </MenuItem>
-
-          <MenuItem onClick={() => handleQuickSwitch('Stylist')} selected={role === 'Stylist'}>
-            <ListItemIcon><ContentCutIcon sx={{ color: '#2E7D32', fontSize: 18 }} /></ListItemIcon>
-            <ListItemText primary="Stylist (Schedule)" slotProps={{ primary: { sx: { fontSize: '0.85rem', fontWeight: 600 } } }} />
-          </MenuItem>
-
-          <Divider sx={{ my: 1 }} />
-
-          <MenuItem onClick={handleOpenLoginScreen}>
-            <ListItemIcon><KeyIcon sx={{ color: '#6A3F4D', fontSize: 18 }} /></ListItemIcon>
-            <ListItemText primary="Switch Staff Login Access" slotProps={{ primary: { sx: { fontSize: '0.85rem', fontWeight: 700, color: '#6A3F4D' } } }} />
-          </MenuItem>
-
           <MenuItem onClick={handleLogout}>
             <ListItemIcon><LockOutlinedIcon sx={{ color: '#D32F2F', fontSize: 18 }} /></ListItemIcon>
-            <ListItemText primary="Lock / Sign Out Session" slotProps={{ primary: { sx: { fontSize: '0.85rem', fontWeight: 700, color: '#D32F2F' } } }} />
+            <ListItemText primary="Sign Out" slotProps={{ primary: { sx: { fontSize: '0.85rem', fontWeight: 700, color: '#D32F2F' } } }} />
           </MenuItem>
         </Menu>
 

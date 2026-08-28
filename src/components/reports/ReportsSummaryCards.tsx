@@ -7,13 +7,15 @@ import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { MONTHLY_FINANCIALS } from '../../services/reportData';
 
 export const ReportsSummaryCards: React.FC = () => {
-  const currentMonthData = MONTHLY_FINANCIALS[MONTHLY_FINANCIALS.length - 1];
+  // Falls back to zeroed figures when there's no financial history yet,
+  // instead of crashing on an empty MONTHLY_FINANCIALS array.
+  const currentMonthData = MONTHLY_FINANCIALS[MONTHLY_FINANCIALS.length - 1] || { revenue: 0, expenses: 0, profit: 0 };
   const grossRevenue = currentMonthData.revenue;
   const netProfit = currentMonthData.profit;
-  const profitMarginPercent = Math.round((netProfit / grossRevenue) * 100);
+  const profitMarginPercent = grossRevenue > 0 ? Math.round((netProfit / grossRevenue) * 100) : 0;
 
-  const avgTicketValue = 1850;
-  const totalClientFootfall = 320;
+  const avgTicketValue = 0;
+  const totalClientFootfall = 0;
 
   return (
     <Grid container spacing={2.5} sx={{ mb: 3 }}>

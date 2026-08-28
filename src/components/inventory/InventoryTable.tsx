@@ -28,6 +28,7 @@ import HistoryIcon from '@mui/icons-material/History';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import { useInventory } from './InventoryContext';
 import { useDashboard } from '../../context/DashboardContext';
+import { canEditInventory } from '../../constants/permissions';
 import { InventoryItem } from '../../types';
 
 export const InventoryTable: React.FC = () => {
@@ -38,7 +39,8 @@ export const InventoryTable: React.FC = () => {
     openAdjustmentModal,
     openHistoryDrawer,
   } = useInventory();
-  const { deleteInventoryItem } = useDashboard();
+  const { deleteInventoryItem, role } = useDashboard();
+  const canEdit = canEditInventory(role);
 
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
@@ -226,32 +228,34 @@ export const InventoryTable: React.FC = () => {
                 {/* Action Column */}
                 <TableCell align="right" sx={{ py: 2 }}>
                   <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'flex-end', alignItems: 'center' }}>
-                    <Tooltip title="Quick Restock">
-                      <Button
-                        size="small"
-                        variant="contained"
-                        onClick={() => openRestockModal(item)}
-                        sx={{
-                          bgcolor: '#F8F4EE',
-                          color: '#6A3F4D',
-                          border: '1px solid #D4C4B0',
-                          minWidth: 32,
-                          px: 1,
-                          py: 0.5,
-                          borderRadius: '8px',
-                          textTransform: 'none',
-                          fontWeight: 700,
-                          boxShadow: 'none',
-                          '&:hover': {
-                            bgcolor: '#6A3F4D',
-                            color: '#FFFFFF',
+                    {canEdit && (
+                      <Tooltip title="Quick Restock">
+                        <Button
+                          size="small"
+                          variant="contained"
+                          onClick={() => openRestockModal(item)}
+                          sx={{
+                            bgcolor: '#F8F4EE',
+                            color: '#6A3F4D',
+                            border: '1px solid #D4C4B0',
+                            minWidth: 32,
+                            px: 1,
+                            py: 0.5,
+                            borderRadius: '8px',
+                            textTransform: 'none',
+                            fontWeight: 700,
                             boxShadow: 'none',
-                          },
-                        }}
-                      >
-                        <AddShoppingCartIcon sx={{ fontSize: 16, mr: 0.5 }} /> Restock
-                      </Button>
-                    </Tooltip>
+                            '&:hover': {
+                              bgcolor: '#6A3F4D',
+                              color: '#FFFFFF',
+                              boxShadow: 'none',
+                            },
+                          }}
+                        >
+                          <AddShoppingCartIcon sx={{ fontSize: 16, mr: 0.5 }} /> Restock
+                        </Button>
+                      </Tooltip>
+                    )}
 
                     <IconButton
                       size="small"
@@ -287,31 +291,35 @@ export const InventoryTable: React.FC = () => {
       >
         {selectedItem && (
           <>
-            <MenuItem
-              onClick={() => {
-                openRestockModal(selectedItem);
-                handleMenuClose();
-              }}
-              sx={{ borderRadius: '8px', py: 1 }}
-            >
-              <ListItemIcon sx={{ color: '#2E7D32' }}>
-                <AddShoppingCartIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText primary="Restock Product" slotProps={{ primary: { sx: { fontWeight: 700, fontSize: '0.85rem' } } }} />
-            </MenuItem>
+            {canEdit && (
+              <MenuItem
+                onClick={() => {
+                  openRestockModal(selectedItem);
+                  handleMenuClose();
+                }}
+                sx={{ borderRadius: '8px', py: 1 }}
+              >
+                <ListItemIcon sx={{ color: '#2E7D32' }}>
+                  <AddShoppingCartIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText primary="Restock Product" slotProps={{ primary: { sx: { fontWeight: 700, fontSize: '0.85rem' } } }} />
+              </MenuItem>
+            )}
 
-            <MenuItem
-              onClick={() => {
-                openAdjustmentModal(selectedItem);
-                handleMenuClose();
-              }}
-              sx={{ borderRadius: '8px', py: 1 }}
-            >
-              <ListItemIcon sx={{ color: '#ED6C02' }}>
-                <RemoveCircleIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText primary="Log Usage / Waste" slotProps={{ primary: { sx: { fontWeight: 700, fontSize: '0.85rem' } } }} />
-            </MenuItem>
+            {canEdit && (
+              <MenuItem
+                onClick={() => {
+                  openAdjustmentModal(selectedItem);
+                  handleMenuClose();
+                }}
+                sx={{ borderRadius: '8px', py: 1 }}
+              >
+                <ListItemIcon sx={{ color: '#ED6C02' }}>
+                  <RemoveCircleIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText primary="Log Usage / Waste" slotProps={{ primary: { sx: { fontWeight: 700, fontSize: '0.85rem' } } }} />
+              </MenuItem>
+            )}
 
             <MenuItem
               onClick={() => {
@@ -326,31 +334,35 @@ export const InventoryTable: React.FC = () => {
               <ListItemText primary="Movement Logs" slotProps={{ primary: { sx: { fontWeight: 700, fontSize: '0.85rem' } } }} />
             </MenuItem>
 
-            <MenuItem
-              onClick={() => {
-                openEditModal(selectedItem);
-                handleMenuClose();
-              }}
-              sx={{ borderRadius: '8px', py: 1 }}
-            >
-              <ListItemIcon sx={{ color: '#2D1F24' }}>
-                <EditIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText primary="Edit Product Details" slotProps={{ primary: { sx: { fontWeight: 700, fontSize: '0.85rem' } } }} />
-            </MenuItem>
+            {canEdit && (
+              <MenuItem
+                onClick={() => {
+                  openEditModal(selectedItem);
+                  handleMenuClose();
+                }}
+                sx={{ borderRadius: '8px', py: 1 }}
+              >
+                <ListItemIcon sx={{ color: '#2D1F24' }}>
+                  <EditIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText primary="Edit Product Details" slotProps={{ primary: { sx: { fontWeight: 700, fontSize: '0.85rem' } } }} />
+              </MenuItem>
+            )}
 
-            <MenuItem
-              onClick={() => {
-                deleteInventoryItem(selectedItem.id);
-                handleMenuClose();
-              }}
-              sx={{ borderRadius: '8px', py: 1, color: '#D32F2F' }}
-            >
-              <ListItemIcon sx={{ color: '#D32F2F' }}>
-                <DeleteIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText primary="Delete Product" slotProps={{ primary: { sx: { fontWeight: 700, fontSize: '0.85rem' } } }} />
-            </MenuItem>
+            {canEdit && (
+              <MenuItem
+                onClick={() => {
+                  deleteInventoryItem(selectedItem.id);
+                  handleMenuClose();
+                }}
+                sx={{ borderRadius: '8px', py: 1, color: '#D32F2F' }}
+              >
+                <ListItemIcon sx={{ color: '#D32F2F' }}>
+                  <DeleteIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText primary="Delete Product" slotProps={{ primary: { sx: { fontWeight: 700, fontSize: '0.85rem' } } }} />
+              </MenuItem>
+            )}
           </>
         )}
       </Menu>

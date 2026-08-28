@@ -23,6 +23,8 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import { SalonService } from '../../types/service';
 import { useServices } from '../../context/ServiceContext';
+import { useDashboard } from '../../context/DashboardContext';
+import { canEditServices } from '../../constants/permissions';
 
 interface Props {
   service: SalonService;
@@ -37,6 +39,8 @@ export const ServiceGridCard: React.FC<Props> = ({ service }) => {
     toggleServiceStatus,
     setServiceForBooking,
   } = useServices();
+  const { role } = useDashboard();
+  const canEdit = canEditServices(role);
 
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -323,6 +327,7 @@ export const ServiceGridCard: React.FC<Props> = ({ service }) => {
                 size="small"
                 checked={service.status === 'Active'}
                 onChange={() => toggleServiceStatus(service.id)}
+                disabled={!canEdit}
                 sx={{
                   '& .MuiSwitch-switchBase.Mui-checked': {
                     color: '#6A3F4D',
@@ -369,27 +374,33 @@ export const ServiceGridCard: React.FC<Props> = ({ service }) => {
           <VisibilityIcon sx={{ fontSize: 18, mr: 1, color: '#6A3F4D' }} />
           View Full Details
         </MenuItem>
-        <MenuItem onClick={handleEdit}>
-          <EditIcon sx={{ fontSize: 18, mr: 1, color: '#1565C0' }} />
-          Edit Service
-        </MenuItem>
-        <MenuItem onClick={() => { handleCloseMenu(); toggleServiceStatus(service.id); }}>
-          {service.status === 'Active' ? (
-            <>
-              <CancelIcon sx={{ fontSize: 18, mr: 1, color: '#D32F2F' }} />
-              Mark Inactive
-            </>
-          ) : (
-            <>
-              <CheckCircleIcon sx={{ fontSize: 18, mr: 1, color: '#2E7D32' }} />
-              Mark Active
-            </>
-          )}
-        </MenuItem>
-        <MenuItem onClick={handleDelete} sx={{ color: '#D32F2F' }}>
-          <DeleteIcon sx={{ fontSize: 18, mr: 1 }} />
-          Delete Service
-        </MenuItem>
+        {canEdit && (
+          <MenuItem onClick={handleEdit}>
+            <EditIcon sx={{ fontSize: 18, mr: 1, color: '#1565C0' }} />
+            Edit Service
+          </MenuItem>
+        )}
+        {canEdit && (
+          <MenuItem onClick={() => { handleCloseMenu(); toggleServiceStatus(service.id); }}>
+            {service.status === 'Active' ? (
+              <>
+                <CancelIcon sx={{ fontSize: 18, mr: 1, color: '#D32F2F' }} />
+                Mark Inactive
+              </>
+            ) : (
+              <>
+                <CheckCircleIcon sx={{ fontSize: 18, mr: 1, color: '#2E7D32' }} />
+                Mark Active
+              </>
+            )}
+          </MenuItem>
+        )}
+        {canEdit && (
+          <MenuItem onClick={handleDelete} sx={{ color: '#D32F2F' }}>
+            <DeleteIcon sx={{ fontSize: 18, mr: 1 }} />
+            Delete Service
+          </MenuItem>
+        )}
       </Menu>
     </Paper>
   );
