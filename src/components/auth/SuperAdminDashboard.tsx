@@ -9,6 +9,7 @@ import {
   CircularProgress,
   Divider,
   Grid,
+  MenuItem,
   Paper,
   TextField,
   Typography,
@@ -153,10 +154,10 @@ export const SuperAdminDashboard: React.FC = () => {
                   <Grid container spacing={2}>
                     <Grid size={{ xs: 12, sm: 6 }}><TextField select fullWidth label="Plan" value={form.subscriptionPlan} onChange={update('subscriptionPlan')}><MenuItem value="Trial">Trial</MenuItem><MenuItem value="Basic">Basic</MenuItem><MenuItem value="Pro">Pro</MenuItem><MenuItem value="Premium">Premium</MenuItem><MenuItem value="Custom">Custom</MenuItem></TextField></Grid>
                     <Grid size={{ xs: 12, sm: 6 }}><TextField select fullWidth label="Subscription Status" value={form.subscriptionStatus} onChange={update('subscriptionStatus')}><MenuItem value="Trial">Trial</MenuItem><MenuItem value="Active">Active</MenuItem><MenuItem value="Expired">Expired</MenuItem><MenuItem value="Cancelled">Cancelled</MenuItem></TextField></Grid>
-                    <Grid size={{ xs: 12, sm: 4 }}><TextField fullWidth type="date" label="Start Date" value={form.subscriptionStartDate} onChange={update('subscriptionStartDate')} InputLabelProps={{ shrink: true }} /></Grid>
-                    <Grid size={{ xs: 12, sm: 4 }}><TextField fullWidth type="date" label="Expiry Date" value={form.subscriptionExpiryDate} onChange={update('subscriptionExpiryDate')} InputLabelProps={{ shrink: true }} /></Grid>
-                    <Grid size={{ xs: 12, sm: 4 }}><TextField fullWidth type="number" label="Amount" value={form.subscriptionAmount} onChange={update('subscriptionAmount')} inputProps={{ min: 0, step: 0.01 }} /></Grid>
-                    <Grid size={{ xs: 12 }}><TextField fullWidth type="date" label="Next Renewal Date" value={form.nextRenewalDate} onChange={update('nextRenewalDate')} InputLabelProps={{ shrink: true }} /></Grid>
+                    <Grid size={{ xs: 12, sm: 4 }}><TextField fullWidth type="date" label="Start Date" value={form.subscriptionStartDate} onChange={update('subscriptionStartDate')} slotProps={{ inputLabel: { shrink: true } }} /></Grid>
+                    <Grid size={{ xs: 12, sm: 4 }}><TextField fullWidth type="date" label="Expiry Date" value={form.subscriptionExpiryDate} onChange={update('subscriptionExpiryDate')} slotProps={{ inputLabel: { shrink: true } }} /></Grid>
+                    <Grid size={{ xs: 12, sm: 4 }}><TextField fullWidth type="number" label="Amount" value={form.subscriptionAmount} onChange={update('subscriptionAmount')} slotProps={{ htmlInput: { min: 0, step: 0.01 } }} /></Grid>
+                    <Grid size={{ xs: 12 }}><TextField fullWidth type="date" label="Next Renewal Date" value={form.nextRenewalDate} onChange={update('nextRenewalDate')} slotProps={{ inputLabel: { shrink: true } }} /></Grid>
                   </Grid>
                   <TextField label="Temporary Password" type="password" required value={form.password} onChange={update('password')} helperText="At least 6 characters. Give this to the salon Admin securely." />
                   <Button type="submit" variant="contained" size="large" disabled={submitting} sx={{ bgcolor: '#6A3F4D', '&:hover': { bgcolor: '#5A3541' }, borderRadius: '12px', py: 1.3, fontWeight: 800 }}>
